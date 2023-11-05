@@ -30,6 +30,10 @@ namespace PvZ {
 
         void SetViewportArea(const ViewportSpace &viewSpace, glm::vec3 colorColor = glm::vec3(0), bool clear = true);
         void DrawScene(const glm::mat3 &visMatrix);
+        void DrawMap(const glm::mat3 &visMatrix);
+        void DrawEnemies(const glm::mat3 &visMatrix);
+        void DrawDefenders(const glm::mat3 &visMatrix);
+        void DrawStars(const glm::mat3 &visMatrix);
 
     protected:
         glm::mat3 modelMatrix, visMatrix;

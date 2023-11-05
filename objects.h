@@ -5,24 +5,24 @@
 namespace PvZ {
     namespace objects {
         Mesh *CreateRectangle(const std::string &name,
-                              const float width,
-                              const float height,
-                              const glm::vec3 color,
-                              const bool fill);
+                              float width,
+                              float height,
+                              glm::vec3 color,
+                              bool fill);
 
         Mesh *CreateDefender(const std::string &name,
-                             const float width,
-                             const float height,
-                             const glm::vec3 color);
+                             float width,
+                             float height,
+                             glm::vec3 color);
 
         Mesh *CreateEnemy(const std::string &name,
-                          const float outer_radius,
-                          const float inner_radius,
-                          const glm::vec3 outer_color,
-                          const glm::vec3 inner_color);
+                          float outer_radius,
+                          float inner_radius,
+                          glm::vec3 outer_color,
+                          glm::vec3 inner_color);
 
         Mesh *CreateStar(const std::string &name,
-                         const float outer_radius,
-                         const glm::vec3 color);
+                         float outer_radius,
+                         glm::vec3 color);
     }
 }

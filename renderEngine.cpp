@@ -5,6 +5,8 @@
 
 #include "transform2D.h"
 #include "objects.h"
+#include "animations.h"
+#include "lab_m1/lab3/transform2D.h"
 
 using namespace std;
 using namespace PvZ;
@@ -24,20 +26,23 @@ void RenderEngine::Init() {
 
     logicsEngine.InitGrid();
 
-    Mesh *endZone = objects::CreateRectangle(END_ZONE_MESH, END_ZONE_WIDTH, END_ZONE_HEIGHT, RED, true);
-    AddMeshToList(endZone);
+    Mesh *endZoneMesh = objects::CreateRectangle(END_ZONE_MESH, END_ZONE_WIDTH, END_ZONE_HEIGHT, RED, true);
+    AddMeshToList(endZoneMesh);
 
-    Mesh *square = objects::CreateRectangle(SQUARE_MESH, SQUARE_SIDE, SQUARE_SIDE, GREEN, true);
-    AddMeshToList(square);
+    Mesh *squareMesh = objects::CreateRectangle(SQUARE_MESH, SQUARE_SIDE, SQUARE_SIDE, GREEN, true);
+    AddMeshToList(squareMesh);
 
-    Mesh *defender = objects::CreateDefender(DEFENDER_MESH, DEFENDER_WIDTH, DEFENDER_HEIGHT, BLUE);
-    AddMeshToList(defender);
+    Mesh *defenderMesh = objects::CreateDefender(DEFENDER_MESH, DEFENDER_WIDTH, DEFENDER_HEIGHT, BLUE);
+    AddMeshToList(defenderMesh);
 
-    Mesh *enemy = objects::CreateEnemy(ENEMY_MESH, ENEMY_OUTER_RADIUS, ENEMY_INNER_RADIUS, RED, BLUE);
-    AddMeshToList(enemy);
+    Mesh *enemyMesh = objects::CreateEnemy(ENEMY_MESH, ENEMY_OUTER_RADIUS, ENEMY_INNER_RADIUS, RED, BLUE);
+    AddMeshToList(enemyMesh);
 
-    Mesh *star = objects::CreateStar(STAR_MESH, STAR_RADIUS, RED);
-    AddMeshToList(star);
+    Mesh *starMesh = objects::CreateStar(STAR_MESH, STAR_RADIUS, RED);
+    AddMeshToList(starMesh);
+
+    logicsEngine.SpawnEnemy({14, logicsEngine.GetGridSquare(1, 2).position.y},
+                            1, 5, ENEMY_MESH);
 }
 
 void RenderEngine::FrameStart() {
@@ -56,6 +61,8 @@ void RenderEngine::Update(float deltaTimeSeconds) {
     visMatrix *= transform2D::VisualizationTransf2DUnif(logicSpace, viewSpace);
 
     DrawScene(visMatrix);
+    logicsEngine.Update(deltaTimeSeconds);
+    
 }
 
 
@@ -118,28 +125,19 @@ void RenderEngine::SetViewportArea(const ViewportSpace &viewSpace, glm::vec3 col
 }
 
 void RenderEngine::DrawScene(const glm::mat3 &visMatrix) {
+    DrawStars(visMatrix);
+    DrawEnemies(visMatrix);
+    DrawDefenders(visMatrix);
+    DrawMap(visMatrix);
+}
 
-    modelMatrix = visMatrix;
-    modelMatrix *= transform2D::Translate(logicsEngine.grid[1][1].position.x,
-                                          logicsEngine.grid[1][1].position.y);
-    RenderMesh2D(meshes[STAR_MESH], shaders["VertexColor"], modelMatrix);
-    
-    modelMatrix = visMatrix;
-    modelMatrix *= transform2D::Translate(logicsEngine.grid[2][2].position.x,
-                                          logicsEngine.grid[2][2].position.y);
-    RenderMesh2D(meshes[ENEMY_MESH], shaders["VertexColor"], modelMatrix);
-    
-    modelMatrix = visMatrix;
-    modelMatrix *= transform2D::Translate(logicsEngine.grid[0][0].position.x,
-                                          logicsEngine.grid[0][0].position.y);
-    RenderMesh2D(meshes[DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
-
+void RenderEngine::DrawMap(const glm::mat3 &visMatrix) {
     // draw squares
     for (int i = 0; i < 3; i++)
         for (int j = 0; j < 3; j++) {
             modelMatrix = visMatrix;
-            modelMatrix *= transform2D::Translate(logicsEngine.grid[i][j].position.x,
-                                                  logicsEngine.grid[i][j].position.y);
+            modelMatrix *= transform2D::Translate(logicsEngine.GetGridSquare(i, j).position.x,
+                                                  logicsEngine.GetGridSquare(i, j).position.y);
             RenderMesh2D(meshes[SQUARE_MESH], shaders["VertexColor"], modelMatrix);
         }
 
@@ -147,4 +145,28 @@ void RenderEngine::DrawScene(const glm::mat3 &visMatrix) {
     modelMatrix = visMatrix;
     modelMatrix *= transform2D::Translate(PADDING + END_ZONE_WIDTH / 2, PADDING + END_ZONE_HEIGHT / 2);
     RenderMesh2D(meshes[END_ZONE_MESH], shaders["VertexColor"], modelMatrix);
+}
+
+void RenderEngine::DrawEnemies(const glm::mat3 &visMatrix) {
+    for (const auto &enemy : logicsEngine.GetEnemies()) {
+        modelMatrix = visMatrix;
+        modelMatrix *= animations::MoveEnemy(enemy.GetPosition().x, enemy.GetPosition().y);
+        modelMatrix *= animations::DestroyObject(enemy.GetScale());
+
+        RenderMesh2D(meshes[enemy.GetMeshType()], shaders["VertexColor"], modelMatrix);
+    }
+}
+
+void RenderEngine::DrawDefenders(const glm::mat3 &visMatrix) {
+    modelMatrix = visMatrix;
+    modelMatrix *= transform2D::Translate(logicsEngine.GetGridSquare(0, 0).position.x,
+                                          logicsEngine.GetGridSquare(0, 0).position.y);
+    RenderMesh2D(meshes[DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+}
+
+void RenderEngine::DrawStars(const glm::mat3 &visMatrix) {
+    modelMatrix = visMatrix;
+    modelMatrix *= transform2D::Translate(logicsEngine.GetGridSquare(1, 1).position.x,
+                                          logicsEngine.GetGridSquare(1, 1).position.y);
+    RenderMesh2D(meshes[STAR_MESH], shaders["VertexColor"], modelMatrix);
 }

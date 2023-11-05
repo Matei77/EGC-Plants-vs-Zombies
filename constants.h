@@ -12,6 +12,9 @@ namespace PvZ {
     constexpr float ENEMY_OUTER_RADIUS = 0.5f;
     constexpr float ENEMY_INNER_RADIUS = 0.35f;
     constexpr float STAR_RADIUS = 0.5f;
+
+    constexpr float ENEMY_MOVE_VAL = 2.0f;
+    constexpr float SCALE_CHANGE_VAL = 4.0f;
     
     const std::string DEFENDER_MESH = "defender";
     const std::string ENEMY_MESH = "enemy";
