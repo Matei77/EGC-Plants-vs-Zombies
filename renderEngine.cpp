@@ -19,30 +19,54 @@ void RenderEngine::Init() {
     camera->Update();
     GetCameraInput()->SetActive(false);
 
-    logicSpace.x = 0; // logic x
-    logicSpace.y = 0; // logic y
-    logicSpace.width = 16; // logic width
-    logicSpace.height = 9; // logic height
+    logicSpace.x = LOGIC_SPACE_X;
+    logicSpace.y = LOGIC_SPACE_Y;
+    logicSpace.width = LOGIC_SPACE_WIDTH;
+    logicSpace.height = LOGIC_SPACE_HEIGHT;
 
-    logicsEngine.InitGrid();
+    logicsEngine.InitLogicsEngine();
 
+    // map meshes
     Mesh *endZoneMesh = objects::CreateRectangle(END_ZONE_MESH, END_ZONE_WIDTH, END_ZONE_HEIGHT, RED, true);
     AddMeshToList(endZoneMesh);
-
     Mesh *squareMesh = objects::CreateRectangle(SQUARE_MESH, SQUARE_SIDE, SQUARE_SIDE, GREEN, true);
     AddMeshToList(squareMesh);
 
-    Mesh *defenderMesh = objects::CreateDefender(DEFENDER_MESH, DEFENDER_WIDTH, DEFENDER_HEIGHT, BLUE);
-    AddMeshToList(defenderMesh);
+    // defender meshes
+    Mesh *orangeDefenderMesh = objects::CreateDefender(ORANGE_DEFENDER_MESH, DEFENDER_WIDTH, DEFENDER_HEIGHT, ORANGE);
+    AddMeshToList(orangeDefenderMesh);
+    Mesh *blueDefenderMesh = objects::CreateDefender(BLUE_DEFENDER_MESH, DEFENDER_WIDTH, DEFENDER_HEIGHT, BLUE);
+    AddMeshToList(blueDefenderMesh);
+    Mesh *yellowDefenderMesh = objects::CreateDefender(YELLOW_DEFENDER_MESH, DEFENDER_WIDTH, DEFENDER_HEIGHT, YELLOW);
+    AddMeshToList(yellowDefenderMesh);
+    Mesh *purpleDefenderMesh = objects::CreateDefender(PURPLE_DEFENDER_MESH, DEFENDER_WIDTH, DEFENDER_HEIGHT, PURPLE);
+    AddMeshToList(purpleDefenderMesh);
 
-    Mesh *enemyMesh = objects::CreateEnemy(ENEMY_MESH, ENEMY_OUTER_RADIUS, ENEMY_INNER_RADIUS, RED, BLUE);
-    AddMeshToList(enemyMesh);
+    // enemy meshes
+    Mesh *orangeEnemyMesh = objects::CreateEnemy(ORANGE_ENEMY_MESH, ENEMY_OUTER_RADIUS, ENEMY_INNER_RADIUS, ORANGE,
+                                                 LIGHT_ORANGE);
+    AddMeshToList(orangeEnemyMesh);
+    Mesh *blueEnemyMesh = objects::CreateEnemy(BLUE_ENEMY_MESH, ENEMY_OUTER_RADIUS, ENEMY_INNER_RADIUS, BLUE,
+                                               LIGHT_BLUE);
+    AddMeshToList(blueEnemyMesh);
+    Mesh *yellowEnemyMesh = objects::CreateEnemy(YELLOW_ENEMY_MESH, ENEMY_OUTER_RADIUS, ENEMY_INNER_RADIUS, YELLOW,
+                                                 LIGHT_YELLOW);
+    AddMeshToList(yellowEnemyMesh);
+    Mesh *purpleEnemyMesh = objects::CreateEnemy(PURPLE_ENEMY_MESH, ENEMY_OUTER_RADIUS, ENEMY_INNER_RADIUS, PURPLE,
+                                                 LIGTH_PURPLE);
+    AddMeshToList(purpleEnemyMesh);
 
-    Mesh *starMesh = objects::CreateStar(STAR_MESH, STAR_RADIUS, RED);
-    AddMeshToList(starMesh);
-
-    logicsEngine.SpawnEnemy({14, logicsEngine.GetGridSquare(1, 2).position.y},
-                            1, 5, ENEMY_MESH);
+    // star meshes
+    Mesh *orangeDtarMesh = objects::CreateStar(ORANGE_STAR_MESH, STAR_RADIUS, ORANGE);
+    AddMeshToList(orangeDtarMesh);
+    Mesh *blueStarMesh = objects::CreateStar(BLUE_STAR_MESH, STAR_RADIUS, BLUE);
+    AddMeshToList(blueStarMesh);
+    Mesh *yellowStarMesh = objects::CreateStar(YELLOW_STAR_MESH, STAR_RADIUS, YELLOW);
+    AddMeshToList(yellowStarMesh);
+    Mesh *purpleStarMesh = objects::CreateStar(PURPLE_STAR_MESH, STAR_RADIUS, PURPLE);
+    AddMeshToList(purpleStarMesh);
+    Mesh *pinkStarMesh = objects::CreateStar(PINK_STAR_MESH, STAR_RADIUS, PINK);
+    AddMeshToList(pinkStarMesh);
 }
 
 void RenderEngine::FrameStart() {
@@ -62,7 +86,6 @@ void RenderEngine::Update(float deltaTimeSeconds) {
 
     DrawScene(visMatrix);
     logicsEngine.Update(deltaTimeSeconds);
-    
 }
 
 
@@ -161,12 +184,12 @@ void RenderEngine::DrawDefenders(const glm::mat3 &visMatrix) {
     modelMatrix = visMatrix;
     modelMatrix *= transform2D::Translate(logicsEngine.GetGridSquare(0, 0).position.x,
                                           logicsEngine.GetGridSquare(0, 0).position.y);
-    RenderMesh2D(meshes[DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+    RenderMesh2D(meshes[PURPLE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
 }
 
 void RenderEngine::DrawStars(const glm::mat3 &visMatrix) {
     modelMatrix = visMatrix;
-    modelMatrix *= transform2D::Translate(logicsEngine.GetGridSquare(1, 1).position.x,
-                                          logicsEngine.GetGridSquare(1, 1).position.y);
-    RenderMesh2D(meshes[STAR_MESH], shaders["VertexColor"], modelMatrix);
+    modelMatrix *= transform2D::Translate(10,
+                                          5);
+    RenderMesh2D(meshes[PINK_STAR_MESH], shaders["VertexColor"], modelMatrix);
 }

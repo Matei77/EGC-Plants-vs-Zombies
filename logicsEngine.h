@@ -10,8 +10,6 @@
 namespace PvZ {
     class LogicsEngine {
     private:
-        const float endZoneLimit = PADDING + END_ZONE_WIDTH;
-        
         struct GridSquare {
             bool occupied = false;
             Position position;
@@ -20,9 +18,10 @@ namespace PvZ {
         GridSquare grid[GRID_SIDE][GRID_SIDE];
         std::vector<Enemy> enemies;
         std::vector<Defender> defenders;
+        std::vector<float> spawnTimers;
 
     public:
-        void SpawnEnemy(Position position, float scale, int health, std::string meshType);
+        void SpawnEnemy(Position position, Type type);
         void Update(float deltaTime);
         
         // safely get grid square
@@ -33,6 +32,6 @@ namespace PvZ {
         }
         std::vector<Enemy> GetEnemies() const { return enemies; }
         std::vector<Defender> GetDefenders() const { return defenders; }
-        void InitGrid();
+        void InitLogicsEngine();
     };
 }

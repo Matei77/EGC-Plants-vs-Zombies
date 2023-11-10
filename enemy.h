@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 
+#include "constants.h"
 #include "utils.h"
 
 namespace PvZ {
@@ -12,11 +13,21 @@ namespace PvZ {
         std::string meshType;
 
     public:
-        Enemy(const Position& position, const float scale, const int health, const std::string& meshType)
-            : position(position),
-              scale(scale),
-              health(health),
-              meshType(meshType) {}
+        Enemy(const Position &position, Type color) : position(position) {
+            scale = DEFALUT_ENEMY_SCALE;
+            health = DEFALUT_ENEMY_HEALTH;
+            switch (color) {
+            case orangeType: meshType = ORANGE_ENEMY_MESH;
+                break;
+            case blueType: meshType = BLUE_ENEMY_MESH;
+                break;
+            case yellowType: meshType = YELLOW_ENEMY_MESH;
+                break;
+            case purpleType: meshType = PURPLE_ENEMY_MESH;
+                break;
+            defalut: ;
+            }
+        }
 
         Position GetPosition() const { return position; }
         int GetHealth() const { return health; }
@@ -26,6 +37,4 @@ namespace PvZ {
         void SetScale(const float scale) { this->scale = scale; }
         void SetHealth(const int health) { this->health = health; }
     };
-    
 }
-
