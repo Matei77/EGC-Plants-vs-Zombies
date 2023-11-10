@@ -33,7 +33,8 @@ namespace PvZ {
         void DrawMap(const glm::mat3 &visMatrix);
         void DrawEnemies(const glm::mat3 &visMatrix);
         void DrawDefenders(const glm::mat3 &visMatrix);
-        void DrawStars(const glm::mat3 &visMatrix);
+        void DrawCreditStars(const glm::mat3 &visMatrix);
+        void DrawGUI(const glm::mat3 &visMatrix);
 
     protected:
         glm::mat3 modelMatrix, visMatrix;

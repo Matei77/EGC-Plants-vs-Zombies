@@ -31,6 +31,8 @@ void RenderEngine::Init() {
     AddMeshToList(endZoneMesh);
     Mesh *squareMesh = objects::CreateRectangle(SQUARE_MESH, SQUARE_SIDE, SQUARE_SIDE, GREEN, true);
     AddMeshToList(squareMesh);
+    Mesh *guiSquareMesh = objects::CreateRectangle(GUI_SQUARE_MESH, SQUARE_SIDE, SQUARE_SIDE, BLACK, false);
+    AddMeshToList(guiSquareMesh);
 
     // defender meshes
     Mesh *orangeDefenderMesh = objects::CreateDefender(ORANGE_DEFENDER_MESH, DEFENDER_WIDTH, DEFENDER_HEIGHT, ORANGE);
@@ -148,7 +150,8 @@ void RenderEngine::SetViewportArea(const ViewportSpace &viewSpace, glm::vec3 col
 }
 
 void RenderEngine::DrawScene(const glm::mat3 &visMatrix) {
-    DrawStars(visMatrix);
+    DrawGUI(visMatrix);
+    DrawCreditStars(visMatrix);
     DrawEnemies(visMatrix);
     DrawDefenders(visMatrix);
     DrawMap(visMatrix);
@@ -181,15 +184,42 @@ void RenderEngine::DrawEnemies(const glm::mat3 &visMatrix) {
 }
 
 void RenderEngine::DrawDefenders(const glm::mat3 &visMatrix) {
-    modelMatrix = visMatrix;
-    modelMatrix *= transform2D::Translate(logicsEngine.GetGridSquare(0, 0).position.x,
-                                          logicsEngine.GetGridSquare(0, 0).position.y);
-    RenderMesh2D(meshes[PURPLE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+    // modelMatrix = visMatrix;
+    // modelMatrix *= transform2D::Translate(logicsEngine.GetGridSquare(0, 0).position.x,
+    //                                       logicsEngine.GetGridSquare(0, 0).position.y);
+    // RenderMesh2D(meshes[PURPLE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
 }
 
-void RenderEngine::DrawStars(const glm::mat3 &visMatrix) {
+void RenderEngine::DrawCreditStars(const glm::mat3 &visMatrix) {
+    for (const auto &star : logicsEngine.GetCreditStars()) {
+        if (star.IsVisible()) {
+            modelMatrix = visMatrix;
+            modelMatrix *= animations::MoveEnemy(star.GetPosition().x, star.GetPosition().y);
+            RenderMesh2D(meshes[PINK_STAR_MESH], shaders["VertexColor"], modelMatrix);
+        }
+    }
+}
+
+void RenderEngine::DrawGUI(const glm::mat3 &visMatrix) {
     modelMatrix = visMatrix;
-    modelMatrix *= transform2D::Translate(10,
-                                          5);
-    RenderMesh2D(meshes[PINK_STAR_MESH], shaders["VertexColor"], modelMatrix);
+    for (int i = 0; i < 4; i++) {
+        modelMatrix = visMatrix;
+        modelMatrix *= transform2D::Translate(PADDING * (i + 1) + SQUARE_SIDE * i + SQUARE_SIDE / 2, GUI_Y);
+        RenderMesh2D(meshes[GUI_SQUARE_MESH], shaders["VertexColor"], modelMatrix);
+        switch(i) {
+        case 0:
+            RenderMesh2D(meshes[ORANGE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+            break;
+        case 1:
+            RenderMesh2D(meshes[BLUE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+            break;
+        case 2:
+            RenderMesh2D(meshes[YELLOW_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+            break;
+        case 3:
+            RenderMesh2D(meshes[PURPLE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+            break;
+        default: ;
+        }
+    }
 }

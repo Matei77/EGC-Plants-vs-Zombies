@@ -12,21 +12,37 @@ void LogicsEngine::SpawnEnemy(const Position position, Type type) {
     enemies.push_back(enemy);
 }
 
+void LogicsEngine::SpawnCreditStar(const Position position) {
+    const auto star = CreditStar(position);
+    creditStars.push_back(star);
+}
+
 void LogicsEngine::Update(const float deltaTime) {
-    for (std::vector<float>::size_type i = 0; i != spawnTimers.size(); i++) {
-        if (spawnTimers[i] <= 0) {
+    // spawn enemies randomly
+    for (std::vector<float>::size_type i = 0; i != enemySpawnTimers.size(); i++) {
+        if (enemySpawnTimers[i] <= 0) {
             switch(i) {
             case 0: SpawnEnemy({SPAWN_X, FIRST_LINE}, static_cast<Type>(rand() % 4)); break;
             case 1: SpawnEnemy({SPAWN_X, SECOND_LINE}, static_cast<Type>(rand() % 4)); break;
             case 2: SpawnEnemy({SPAWN_X, THIRD_LINE}, static_cast<Type>(rand() % 4)); break;
             default: ;
             }
-            spawnTimers[i] = rand() % 10 + 3;
+            enemySpawnTimers[i] = rand() % 10 + 3;
         } else {
-            spawnTimers[i] -= 1 * deltaTime;
+            enemySpawnTimers[i] -= 1 * deltaTime;
         }
     }
-    
+
+    if (creditStarSpawnTimer <= 0) {
+        SpawnCreditStar({static_cast<float>(rand() % 10 + 6.5), static_cast<float>(rand() % 6 + 1)});
+        SpawnCreditStar({static_cast<float>(rand() % 10 + 6.5), static_cast<float>(rand() % 6 + 1)});
+        SpawnCreditStar({static_cast<float>(rand() % 10 + 6.5), static_cast<float>(rand() % 6 + 1)});
+        creditStarSpawnTimer = rand() % 7 + 3;
+    } else {
+        creditStarSpawnTimer -= 1 * deltaTime;
+    }
+
+    // update enemy position and scale if necessary
     for (auto &enemy : enemies) {
         Position position = enemy.GetPosition();
     
@@ -40,8 +56,28 @@ void LogicsEngine::Update(const float deltaTime) {
         }
     }
 
+    // update creditStar timer
+    for (auto &star : creditStars) {
+        star.SetTimer(star.GetTimer() - 1 * deltaTime);
+        if (star.GetTimer() <= 2) {
+            star.SetBlinkTimer(star.GetBlinkTimer() - 1 * deltaTime);
+            if (star.IsVisible() == true && star.GetBlinkTimer() <= 0) {
+                star.SetVisible(false);
+                star.SetBlinkTimer(DEFAULT_BLINK_TIMER);
+            } else if (star.IsVisible() == false && star.GetBlinkTimer() <= 0) {
+                star.SetVisible(true);
+                star.SetBlinkTimer(DEFAULT_BLINK_TIMER);
+            }
+        }
+    }
+
+    // delete dead enemies
     enemies.erase(std::remove_if(enemies.begin(), enemies.end(), [](Enemy enemy) { return enemy.GetScale() <= 0; }),
                   enemies.end());
+
+    // delete expired stars
+    creditStars.erase(std::remove_if(creditStars.begin(), creditStars.end(), [](CreditStar star) {return star.GetTimer() <= 0; }),
+                      creditStars.end());
     
 }
 
@@ -49,10 +85,14 @@ void LogicsEngine::InitLogicsEngine() {
     // set seed
     srand(time(NULL));
 
+    // set initial player credit
+    playerCredit = 0;
+
     // set the enemy spawn timer on each lane
-    spawnTimers.push_back(rand() % 5 + 1);
-    spawnTimers.push_back(rand() % 5 + 1);
-    spawnTimers.push_back(rand() % 5 + 1);
+    enemySpawnTimers.push_back(rand() % 5 + 1);
+    enemySpawnTimers.push_back(rand() % 5 + 1);
+    enemySpawnTimers.push_back(rand() % 5 + 1);
+    creditStarSpawnTimer = rand() % 2 + 1;
 
     // init grid positions
     for (int i = 0; i < 3; i++)

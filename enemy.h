@@ -14,8 +14,8 @@ namespace PvZ {
 
     public:
         Enemy(const Position &position, Type color) : position(position) {
-            scale = DEFALUT_ENEMY_SCALE;
-            health = DEFALUT_ENEMY_HEALTH;
+            scale = DEFAULT_ENEMY_SCALE;
+            health = DEFAULT_ENEMY_HEALTH;
             switch (color) {
             case orangeType: meshType = ORANGE_ENEMY_MESH;
                 break;

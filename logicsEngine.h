@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "constants.h"
+#include "creditStar.h"
 #include "defender.h"
 #include "enemy.h"
 #include "utils.h"
@@ -18,10 +19,14 @@ namespace PvZ {
         GridSquare grid[GRID_SIDE][GRID_SIDE];
         std::vector<Enemy> enemies;
         std::vector<Defender> defenders;
-        std::vector<float> spawnTimers;
+        std::vector<float> enemySpawnTimers;
+        float creditStarSpawnTimer;
+        std::vector<CreditStar> creditStars;
+        int playerCredit;
 
     public:
         void SpawnEnemy(Position position, Type type);
+        void SpawnCreditStar(Position position);
         void Update(float deltaTime);
         
         // safely get grid square
@@ -33,5 +38,6 @@ namespace PvZ {
         std::vector<Enemy> GetEnemies() const { return enemies; }
         std::vector<Defender> GetDefenders() const { return defenders; }
         void InitLogicsEngine();
+        std::vector<CreditStar> GetCreditStars() const { return creditStars; }
     };
 }

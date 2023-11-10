@@ -27,8 +27,12 @@ namespace PvZ {
     constexpr float ENEMY_MOVE_VAL = 2.0f;
     constexpr float SCALE_CHANGE_VAL = 4.0f;
 
-    constexpr float DEFALUT_ENEMY_SCALE = 1; 
-    constexpr int DEFALUT_ENEMY_HEALTH = 5; 
+    constexpr float DEFAULT_ENEMY_SCALE = 1; 
+    constexpr int DEFAULT_ENEMY_HEALTH = 5;
+    constexpr float DEFAULT_STAR_TIMER = 7;
+    constexpr float DEFAULT_BLINK_TIMER = 0.2f;
+    
+    constexpr float GUI_Y = LOGIC_SPACE_HEIGHT - PADDING - SQUARE_SIDE / 2;
 
     enum Type {
         orangeType,
@@ -57,10 +61,13 @@ namespace PvZ {
     const std::string SQUARE_MESH = "square";
     const std::string END_ZONE_MESH = "endZone";
 
+    const std::string GUI_SQUARE_MESH = "guiSquare";
+
     
     const glm::vec3 RED = glm::vec3(1, 0, 0);
     const glm::vec3 GREEN = glm::vec3(0.3f, 1, 0.1f);
     const glm::vec3 PINK = glm::vec3(0.92f, 0.2f, 0.58f);
+    const glm::vec3 BLACK = glm::vec3(0, 0, 0);
     
     const glm::vec3 ORANGE = glm::vec3(0.98f, 0.53f, 0.01f);
     const glm::vec3 LIGHT_ORANGE = glm::vec3(1.0f, 0.65f, 0.26f);
