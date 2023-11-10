@@ -116,6 +116,21 @@ void RenderEngine::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY) {
 
 void RenderEngine::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods) {
     // Add mouse button press event
+    glm::vec3 viewMouse = glm::vec3(mouseX, viewSpace.height - mouseY, 1);
+    glm::vec3 logicMouse = glm::inverse(visMatrix) * viewMouse;
+    
+    float logicMouseX = logicMouse[0];
+    float logicMouseY = logicMouse[1];
+    
+    if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+        for (auto &star : logicsEngine.GetCreditStars()) {
+            if ((logicMouseX - star.GetPosition().x) * (logicMouseX - star.GetPosition().x) +
+                (logicMouseY - star.GetPosition().y) * (logicMouseY - star.GetPosition().y) <= STAR_RADIUS * STAR_RADIUS) {
+                star.SetTimer(-1);
+                logicsEngine.SetPlayerCredit(logicsEngine.GetPlayerCredit() + 1);
+            }
+        }
+    }
 }
 
 
@@ -201,12 +216,12 @@ void RenderEngine::DrawCreditStars(const glm::mat3 &visMatrix) {
 }
 
 void RenderEngine::DrawGUI(const glm::mat3 &visMatrix) {
-    modelMatrix = visMatrix;
+    // draw defender types squares
     for (int i = 0; i < 4; i++) {
         modelMatrix = visMatrix;
         modelMatrix *= transform2D::Translate(PADDING * (i + 1) + SQUARE_SIDE * i + SQUARE_SIDE / 2, GUI_Y);
         RenderMesh2D(meshes[GUI_SQUARE_MESH], shaders["VertexColor"], modelMatrix);
-        switch(i) {
+        switch (i) {
         case 0:
             RenderMesh2D(meshes[ORANGE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
             break;

@@ -25,7 +25,4 @@ namespace PvZ {
         float GetBlinkTimer() const { return blink_timer; }
         void SetBlinkTimer(const float blinkTimer) { blink_timer = blinkTimer; }
     };
-
 }
-
-

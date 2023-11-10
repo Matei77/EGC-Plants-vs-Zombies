@@ -38,6 +38,9 @@ namespace PvZ {
         std::vector<Enemy> GetEnemies() const { return enemies; }
         std::vector<Defender> GetDefenders() const { return defenders; }
         void InitLogicsEngine();
-        std::vector<CreditStar> GetCreditStars() const { return creditStars; }
+        std::vector<CreditStar> & GetCreditStars() { return creditStars; }
+        int GetPlayerCredit() const { return playerCredit; }
+        void SetPlayerCredit(const int playerCredit) { this->playerCredit = playerCredit; }
+        
     };
 }
