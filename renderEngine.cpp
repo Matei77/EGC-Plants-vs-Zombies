@@ -71,6 +71,8 @@ void RenderEngine::Init() {
     AddMeshToList(purpleStarMesh);
     Mesh *pinkStarMesh = objects::CreateStar(PINK_STAR_MESH, STAR_RADIUS, PINK);
     AddMeshToList(pinkStarMesh);
+    Mesh *grayStarMesh = objects::CreateStar(GRAY_STAR_MESH, GRAY_STAR_RADIUS, GRAY);
+    AddMeshToList(grayStarMesh);
 }
 
 void RenderEngine::FrameStart() {
@@ -240,9 +242,17 @@ void RenderEngine::DrawGUI(const glm::mat3 &visMatrix) {
         }
     }
 
+    // draw lives
     for (int i = logicsEngine.GetPlayerLives() - 1; i >= 0; i--) {
         modelMatrix = visMatrix;
         modelMatrix *= transform2D::Translate(LOGIC_SPACE_WIDTH - PADDING - PADDING * (i + 1) - LIFE_SIDE * i - LIFE_SIDE / 2, GUI_Y);
         RenderMesh2D(meshes[GUI_LIVES_MESH], shaders["VertexColor"], modelMatrix);
+    }
+
+    // draw credit stars
+    for (int i = 0; i < logicsEngine.GetPlayerCredit(); i++) {
+        modelMatrix = visMatrix;
+        modelMatrix *= transform2D::Translate(CREDIT_STAR_START_X  + GRAY_STAR_RADIUS + (GRAY_STAR_RADIUS * 2) * (i % 9), CREDIT_STAR_START_Y - (GRAY_STAR_RADIUS * 2) * (i / 9));
+        RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
     }
 }
