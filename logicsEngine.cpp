@@ -18,6 +18,9 @@ void LogicsEngine::SpawnCreditStar(const Position position) {
 }
 
 void LogicsEngine::Update(const float deltaTime) {
+    if (!playerLives) {
+        return;
+    }
     // spawn enemies randomly
     for (std::vector<float>::size_type i = 0; i != enemySpawnTimers.size(); i++) {
         if (enemySpawnTimers[i] <= 0) {
@@ -27,7 +30,7 @@ void LogicsEngine::Update(const float deltaTime) {
             case 2: SpawnEnemy({SPAWN_X, THIRD_LINE}, static_cast<Type>(rand() % 4)); break;
             default: ;
             }
-            enemySpawnTimers[i] = rand() % 10 + 3;
+            enemySpawnTimers[i] = (rand() % 100) / 10.0f + 3;
         } else {
             enemySpawnTimers[i] -= 1 * deltaTime;
         }
@@ -49,6 +52,10 @@ void LogicsEngine::Update(const float deltaTime) {
         if (position.x < END_ZONE_LIMIT) {
             if (enemy.GetScale() > 0) {
                 enemy.SetScale(enemy.GetScale() - SCALE_CHANGE_VAL * deltaTime);
+            }
+            if (!enemy.ReachedEnd()) {
+                enemy.SetReachedEnd(true);
+                playerLives--;
             }
         } else {
             position.x -= ENEMY_MOVE_VAL * deltaTime;
@@ -87,11 +94,12 @@ void LogicsEngine::InitLogicsEngine() {
 
     // set initial player credit
     playerCredit = 0;
+    playerLives = 3;
 
     // set the enemy spawn timer on each lane
-    enemySpawnTimers.push_back(rand() % 5 + 1);
-    enemySpawnTimers.push_back(rand() % 5 + 1);
-    enemySpawnTimers.push_back(rand() % 5 + 1);
+    enemySpawnTimers.push_back(rand() % 50 / 10.0f + 1);
+    enemySpawnTimers.push_back(rand() % 50 / 10.0f + 1);
+    enemySpawnTimers.push_back(rand() % 50 / 10.0f + 1);
     creditStarSpawnTimer = rand() % 2 + 1;
 
     // init grid positions

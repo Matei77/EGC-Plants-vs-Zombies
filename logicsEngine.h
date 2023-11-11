@@ -23,6 +23,7 @@ namespace PvZ {
         float creditStarSpawnTimer;
         std::vector<CreditStar> creditStars;
         int playerCredit;
+        int playerLives;
 
     public:
         void SpawnEnemy(Position position, Type type);
@@ -41,6 +42,7 @@ namespace PvZ {
         std::vector<CreditStar> & GetCreditStars() { return creditStars; }
         int GetPlayerCredit() const { return playerCredit; }
         void SetPlayerCredit(const int playerCredit) { this->playerCredit = playerCredit; }
-        
+        int  GetPlayerLives() const { return playerLives; }
+        void SetPlayerLives(const int playerLives) { this->playerLives = playerLives; }
     };
 }

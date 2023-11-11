@@ -33,6 +33,8 @@ void RenderEngine::Init() {
     AddMeshToList(squareMesh);
     Mesh *guiSquareMesh = objects::CreateRectangle(GUI_SQUARE_MESH, SQUARE_SIDE, SQUARE_SIDE, BLACK, false);
     AddMeshToList(guiSquareMesh);
+    Mesh *guiLivesMesh = objects::CreateRectangle(GUI_LIVES_MESH, LIFE_SIDE, LIFE_SIDE, RED, true);
+    AddMeshToList(guiLivesMesh);
 
     // defender meshes
     Mesh *orangeDefenderMesh = objects::CreateDefender(ORANGE_DEFENDER_MESH, DEFENDER_WIDTH, DEFENDER_HEIGHT, ORANGE);
@@ -236,5 +238,11 @@ void RenderEngine::DrawGUI(const glm::mat3 &visMatrix) {
             break;
         default: ;
         }
+    }
+
+    for (int i = logicsEngine.GetPlayerLives() - 1; i >= 0; i--) {
+        modelMatrix = visMatrix;
+        modelMatrix *= transform2D::Translate(LOGIC_SPACE_WIDTH - PADDING - PADDING * (i + 1) - LIFE_SIDE * i - LIFE_SIDE / 2, GUI_Y);
+        RenderMesh2D(meshes[GUI_LIVES_MESH], shaders["VertexColor"], modelMatrix);
     }
 }

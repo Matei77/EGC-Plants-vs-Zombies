@@ -33,6 +33,7 @@ namespace PvZ {
     constexpr float DEFAULT_BLINK_TIMER = 0.2f;
     
     constexpr float GUI_Y = LOGIC_SPACE_HEIGHT - PADDING - SQUARE_SIDE / 2;
+    constexpr float LIFE_SIDE = 1.0f;
 
     enum Type {
         orangeType,
@@ -62,6 +63,7 @@ namespace PvZ {
     const std::string END_ZONE_MESH = "endZone";
 
     const std::string GUI_SQUARE_MESH = "guiSquare";
+    const std::string GUI_LIVES_MESH = "livesMesh";
 
     
     const glm::vec3 RED = glm::vec3(1, 0, 0);
