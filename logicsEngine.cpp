@@ -12,6 +12,11 @@ void LogicsEngine::SpawnEnemy(const Position position, Type type) {
     enemies.push_back(enemy);
 }
 
+void LogicsEngine::SpawnDefender(const Position position, Type type) {
+    const auto defender = Defender(position, type);
+    defenders.push_back(defender);
+}
+
 void LogicsEngine::SpawnCreditStar(const Position position) {
     const auto star = CreditStar(position);
     creditStars.push_back(star);
@@ -92,9 +97,15 @@ void LogicsEngine::InitLogicsEngine() {
     // set seed
     srand(time(NULL));
 
-    // set initial player credit
+    // set initial player credit and lives
     playerCredit = 0;
     playerLives = 3;
+
+    // set prices
+    prices.insert({orangeType, 1});
+    prices.insert({blueType, 2});
+    prices.insert({yellowType, 2});
+    prices.insert({purpleType, 3});
 
     // set the enemy spawn timer on each lane
     enemySpawnTimers.push_back(rand() % 100 / 10.0f + 2);

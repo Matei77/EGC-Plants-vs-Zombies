@@ -27,7 +27,7 @@ namespace PvZ {
                 break;
             case purpleType: meshType = PURPLE_ENEMY_MESH;
                 break;
-            defalut: ;
+            default: ;
             }
         }
 

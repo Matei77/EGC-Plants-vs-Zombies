@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <iostream>
+#include <iso646.h>
 
 #include "transform2D.h"
 #include "objects.h"
@@ -115,6 +116,13 @@ void RenderEngine::OnKeyRelease(int key, int mods) {
 
 void RenderEngine::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY) {
     // Add mouse move event
+    glm::vec3 viewMouse = glm::vec3(mouseX, viewSpace.height - mouseY, 1);
+    glm::vec3 logicMouse = glm::inverse(visMatrix) * viewMouse;
+
+    float logicMouseX = logicMouse[0];
+    float logicMouseY = logicMouse[1];
+    
+    logicsEngine.SetDragDefenderPos({logicMouseX, logicMouseY});
 }
 
 
@@ -122,16 +130,56 @@ void RenderEngine::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
     // Add mouse button press event
     glm::vec3 viewMouse = glm::vec3(mouseX, viewSpace.height - mouseY, 1);
     glm::vec3 logicMouse = glm::inverse(visMatrix) * viewMouse;
-    
+
     float logicMouseX = logicMouse[0];
     float logicMouseY = logicMouse[1];
-    
+
     if (button == GLFW_MOUSE_BUTTON_RIGHT) {
         for (auto &star : logicsEngine.GetCreditStars()) {
             if ((logicMouseX - star.GetPosition().x) * (logicMouseX - star.GetPosition().x) +
-                (logicMouseY - star.GetPosition().y) * (logicMouseY - star.GetPosition().y) <= STAR_RADIUS * STAR_RADIUS) {
+                (logicMouseY - star.GetPosition().y) * (logicMouseY - star.GetPosition().y) <= STAR_RADIUS *
+                STAR_RADIUS) {
                 star.SetTimer(-1);
                 logicsEngine.SetPlayerCredit(logicsEngine.GetPlayerCredit() + 1);
+            }
+        }
+
+        // orange defender select
+        float defenderPosX = PADDING + SQUARE_SIDE / 2;
+        float defenderPosY = GUI_Y;
+        logicsEngine.SetSelectedDefender(noType);
+
+        if (logicsEngine.GetPlayerCredit() >= 1) {
+            if (defenderPosX - SQUARE_SIDE / 2 < logicMouseX && logicMouseX < defenderPosX + SQUARE_SIDE / 2 &&
+                defenderPosY - SQUARE_SIDE / 2 < logicMouseY && logicMouseY < defenderPosY + SQUARE_SIDE / 2) {
+                logicsEngine.SetSelectedDefender(orangeType);
+            }
+        }
+
+        // blue defender select
+        defenderPosX += PADDING + SQUARE_SIDE;
+        if (logicsEngine.GetPlayerCredit() >= 2) {
+            if (defenderPosX - SQUARE_SIDE / 2 < logicMouseX && logicMouseX < defenderPosX + SQUARE_SIDE / 2 &&
+                defenderPosY - SQUARE_SIDE / 2 < logicMouseY && logicMouseY < defenderPosY + SQUARE_SIDE / 2) {
+                logicsEngine.SetSelectedDefender(blueType);
+            }
+        }
+
+        // yellow defender select
+        defenderPosX += PADDING + SQUARE_SIDE;
+        if (logicsEngine.GetPlayerCredit() >= 2) {
+            if (defenderPosX - SQUARE_SIDE / 2 < logicMouseX && logicMouseX < defenderPosX + SQUARE_SIDE / 2 &&
+                defenderPosY - SQUARE_SIDE / 2 < logicMouseY && logicMouseY < defenderPosY + SQUARE_SIDE / 2) {
+                logicsEngine.SetSelectedDefender(yellowType);
+            }
+        }
+
+        // purple defender select
+        defenderPosX += PADDING + SQUARE_SIDE;
+        if (logicsEngine.GetPlayerCredit() >= 3) {
+            if (defenderPosX - SQUARE_SIDE / 2 < logicMouseX && logicMouseX < defenderPosX + SQUARE_SIDE / 2 &&
+                defenderPosY - SQUARE_SIDE / 2 < logicMouseY && logicMouseY < defenderPosY + SQUARE_SIDE / 2) {
+                logicsEngine.SetSelectedDefender(purpleType);
             }
         }
     }
@@ -140,6 +188,35 @@ void RenderEngine::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 
 void RenderEngine::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods) {
     // Add mouse button release event
+    glm::vec3 viewMouse = glm::vec3(mouseX, viewSpace.height - mouseY, 1);
+    glm::vec3 logicMouse = glm::inverse(visMatrix) * viewMouse;
+    
+    float logicMouseX = logicMouse[0];
+    float logicMouseY = logicMouse[1];
+    
+    if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+        for (int i = 0; i < GRID_SIDE; i++) {
+            for (int j = 0; j < GRID_SIDE; j++) {
+                float squarePosX = logicsEngine.GetGridSquare(i, j).position.x;
+                float squarePosY = logicsEngine.GetGridSquare(i, j).position.y;
+        
+                if (squarePosX - SQUARE_SIDE / 2 < logicMouseX && logicMouseX < squarePosX + SQUARE_SIDE / 2 &&
+                    squarePosY - SQUARE_SIDE / 2 < logicMouseY && logicMouseY < squarePosY + SQUARE_SIDE / 2 &&
+                    logicsEngine.GetGridSquare(i, j).occupied == false && logicsEngine.GetSelectedDefender() !=
+                    noType) {
+                    logicsEngine.SpawnDefender({squarePosX, squarePosY}, logicsEngine.GetSelectedDefender());
+                
+                    // charge the player the appropriate number of stars for placing a defender
+                    logicsEngine.SetPlayerCredit(
+                        logicsEngine.GetPlayerCredit() - logicsEngine.GetPrices().
+                                                                      at(logicsEngine.GetSelectedDefender()));
+                    logicsEngine.GetGridSquare(i, j).occupied = true;
+                }
+            }
+        }
+    }
+
+    logicsEngine.SetSelectedDefender(noType);
 }
 
 
@@ -203,10 +280,12 @@ void RenderEngine::DrawEnemies(const glm::mat3 &visMatrix) {
 }
 
 void RenderEngine::DrawDefenders(const glm::mat3 &visMatrix) {
-    // modelMatrix = visMatrix;
-    // modelMatrix *= transform2D::Translate(logicsEngine.GetGridSquare(0, 0).position.x,
-    //                                       logicsEngine.GetGridSquare(0, 0).position.y);
-    // RenderMesh2D(meshes[PURPLE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+    for (const auto &defender : logicsEngine.GetDefenders()) {
+        modelMatrix = visMatrix;
+        modelMatrix *= animations::MoveEnemy(defender.GetPosition().x, defender.GetPosition().y);
+        modelMatrix *= animations::DestroyObject(defender.GetScale());
+        RenderMesh2D(meshes[defender.GetMeshType()], shaders["VertexColor"], modelMatrix);
+    }
 }
 
 void RenderEngine::DrawCreditStars(const glm::mat3 &visMatrix) {
@@ -232,7 +311,7 @@ void RenderEngine::DrawGUI(const glm::mat3 &visMatrix) {
             // draw defender
             RenderMesh2D(meshes[ORANGE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
 
-            // draw price
+        // draw price
             modelMatrix = visMatrix;
             modelMatrix *= transform2D::Translate(priceX, PRICE_Y);
             RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
@@ -240,8 +319,8 @@ void RenderEngine::DrawGUI(const glm::mat3 &visMatrix) {
         case 1:
             // draw defender
             RenderMesh2D(meshes[BLUE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
-            
-            // draw price
+
+        // draw price
             modelMatrix = visMatrix;
             modelMatrix *= transform2D::Translate(priceX, PRICE_Y);
             RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
@@ -252,7 +331,7 @@ void RenderEngine::DrawGUI(const glm::mat3 &visMatrix) {
             // draw defender
             RenderMesh2D(meshes[YELLOW_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
 
-            // draw price
+        // draw price
             modelMatrix = visMatrix;
             modelMatrix *= transform2D::Translate(priceX, PRICE_Y);
             RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
@@ -263,7 +342,7 @@ void RenderEngine::DrawGUI(const glm::mat3 &visMatrix) {
             // draw defender
             RenderMesh2D(meshes[PURPLE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
 
-            // draw price
+        // draw price
             modelMatrix = visMatrix;
             modelMatrix *= transform2D::Translate(priceX, PRICE_Y);
             RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
@@ -279,14 +358,37 @@ void RenderEngine::DrawGUI(const glm::mat3 &visMatrix) {
     // draw lives
     for (int i = logicsEngine.GetPlayerLives() - 1; i >= 0; i--) {
         modelMatrix = visMatrix;
-        modelMatrix *= transform2D::Translate(LOGIC_SPACE_WIDTH - PADDING - PADDING * (i + 1) - LIFE_SIDE * i - LIFE_SIDE / 2, GUI_Y);
+        modelMatrix *= transform2D::Translate(
+            LOGIC_SPACE_WIDTH - PADDING - PADDING * (i + 1) - LIFE_SIDE * i - LIFE_SIDE / 2, GUI_Y);
         RenderMesh2D(meshes[GUI_LIVES_MESH], shaders["VertexColor"], modelMatrix);
     }
 
     // draw credit stars
     for (int i = 0; i < logicsEngine.GetPlayerCredit(); i++) {
         modelMatrix = visMatrix;
-        modelMatrix *= transform2D::Translate(CREDIT_STAR_START_X  + GRAY_STAR_RADIUS + (GRAY_STAR_RADIUS * 2) * (i % 9), CREDIT_STAR_START_Y - (GRAY_STAR_RADIUS * 2) * (i / 9));
+        modelMatrix *= transform2D::Translate(CREDIT_STAR_START_X + GRAY_STAR_RADIUS + (GRAY_STAR_RADIUS * 2) * (i % 9),
+                                              CREDIT_STAR_START_Y - (GRAY_STAR_RADIUS * 2) * (i / 9));
         RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
+    }
+
+    // draw defender drag and drop
+    if (logicsEngine.GetSelectedDefender() != noType) {
+        modelMatrix = visMatrix;
+        modelMatrix *= transform2D::Translate(logicsEngine.GetDragDefenderPos().x, logicsEngine.GetDragDefenderPos().y);
+        modelMatrix *= transform2D::Scale(DRAG_AND_DROP_SCALE, DRAG_AND_DROP_SCALE);
+        switch (logicsEngine.GetSelectedDefender()) {
+        case orangeType:
+            RenderMesh2D(meshes[ORANGE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+            break;
+        case blueType:
+            RenderMesh2D(meshes[BLUE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+            break;
+        case yellowType:
+            RenderMesh2D(meshes[YELLOW_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+            break;
+        case purpleType:
+            RenderMesh2D(meshes[PURPLE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+            break;
+        }
     }
 }

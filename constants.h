@@ -31,10 +31,11 @@ namespace PvZ {
     // defaults
     constexpr float ENEMY_MOVE_VAL = 2.0f;
     constexpr float SCALE_CHANGE_VAL = 4.0f;
-    constexpr float DEFAULT_ENEMY_SCALE = 1; 
-    constexpr int DEFAULT_ENEMY_HEALTH = 5;
     constexpr float DEFAULT_STAR_TIMER = 7;
     constexpr float DEFAULT_BLINK_TIMER = 0.2f;
+    constexpr float DEFAULT_DEFENDER_SCALE = 1; 
+    constexpr float DEFAULT_ENEMY_SCALE = 1; 
+    constexpr int DEFAULT_ENEMY_HEALTH = 5;
 
     // gui
     constexpr float GUI_Y = LOGIC_SPACE_HEIGHT - PADDING - SQUARE_SIDE / 2;
@@ -43,13 +44,15 @@ namespace PvZ {
     constexpr float CREDIT_STAR_START_X = PADDING * 5 + SQUARE_SIDE * 4;
     constexpr float CREDIT_STAR_START_Y = LOGIC_SPACE_HEIGHT - PADDING - GRAY_STAR_RADIUS;
     constexpr float PRICE_Y = LOGIC_SPACE_HEIGHT - PADDING - SQUARE_SIDE - GRAY_STAR_RADIUS;
+    constexpr float DRAG_AND_DROP_SCALE = 0.75f;
 
     // color types for objects
     enum Type {
         orangeType,
         blueType,
         yellowType,
-        purpleType
+        purpleType,
+        noType
     };
 
     // meshes
