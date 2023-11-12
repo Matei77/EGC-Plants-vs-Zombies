@@ -220,23 +220,57 @@ void RenderEngine::DrawCreditStars(const glm::mat3 &visMatrix) {
 }
 
 void RenderEngine::DrawGUI(const glm::mat3 &visMatrix) {
-    // draw defender types squares
+    // draw defender types squares with prices
     for (int i = 0; i < 4; i++) {
+        float priceX = PADDING * (i + 1) + SQUARE_SIDE * i + GRAY_STAR_RADIUS;
         modelMatrix = visMatrix;
         modelMatrix *= transform2D::Translate(PADDING * (i + 1) + SQUARE_SIDE * i + SQUARE_SIDE / 2, GUI_Y);
+        // draw square
         RenderMesh2D(meshes[GUI_SQUARE_MESH], shaders["VertexColor"], modelMatrix);
         switch (i) {
         case 0:
+            // draw defender
             RenderMesh2D(meshes[ORANGE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+
+            // draw price
+            modelMatrix = visMatrix;
+            modelMatrix *= transform2D::Translate(priceX, PRICE_Y);
+            RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
             break;
         case 1:
+            // draw defender
             RenderMesh2D(meshes[BLUE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+            
+            // draw price
+            modelMatrix = visMatrix;
+            modelMatrix *= transform2D::Translate(priceX, PRICE_Y);
+            RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
+            modelMatrix *= transform2D::Translate(GRAY_STAR_RADIUS * 2, 0);
+            RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
             break;
         case 2:
+            // draw defender
             RenderMesh2D(meshes[YELLOW_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+
+            // draw price
+            modelMatrix = visMatrix;
+            modelMatrix *= transform2D::Translate(priceX, PRICE_Y);
+            RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
+            modelMatrix *= transform2D::Translate(GRAY_STAR_RADIUS * 2, 0);
+            RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
             break;
         case 3:
+            // draw defender
             RenderMesh2D(meshes[PURPLE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+
+            // draw price
+            modelMatrix = visMatrix;
+            modelMatrix *= transform2D::Translate(priceX, PRICE_Y);
+            RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
+            modelMatrix *= transform2D::Translate(GRAY_STAR_RADIUS * 2, 0);
+            RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
+            modelMatrix *= transform2D::Translate(GRAY_STAR_RADIUS * 2, 0);
+            RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
             break;
         default: ;
         }

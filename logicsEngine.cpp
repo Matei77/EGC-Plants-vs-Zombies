@@ -97,9 +97,9 @@ void LogicsEngine::InitLogicsEngine() {
     playerLives = 3;
 
     // set the enemy spawn timer on each lane
-    enemySpawnTimers.push_back(rand() % 50 / 10.0f + 1);
-    enemySpawnTimers.push_back(rand() % 50 / 10.0f + 1);
-    enemySpawnTimers.push_back(rand() % 50 / 10.0f + 1);
+    enemySpawnTimers.push_back(rand() % 100 / 10.0f + 2);
+    enemySpawnTimers.push_back(rand() % 100 / 10.0f + 2);
+    enemySpawnTimers.push_back(rand() % 100 / 10.0f + 2);
     creditStarSpawnTimer = rand() % 2 + 1;
 
     // init grid positions

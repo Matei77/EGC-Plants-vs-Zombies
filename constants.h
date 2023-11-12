@@ -42,6 +42,7 @@ namespace PvZ {
     constexpr float GRAY_STAR_RADIUS = 0.25f;
     constexpr float CREDIT_STAR_START_X = PADDING * 5 + SQUARE_SIDE * 4;
     constexpr float CREDIT_STAR_START_Y = LOGIC_SPACE_HEIGHT - PADDING - GRAY_STAR_RADIUS;
+    constexpr float PRICE_Y = LOGIC_SPACE_HEIGHT - PADDING - SQUARE_SIDE - GRAY_STAR_RADIUS;
 
     // color types for objects
     enum Type {
