@@ -27,8 +27,11 @@ namespace PvZ {
     constexpr float THIRD_LINE = PADDING * 3 + SQUARE_SIDE * 2.5f;
     constexpr float SPAWN_X = LOGIC_SPACE_WIDTH + 1;
     constexpr int GRID_SIDE = 3;
+    constexpr float PROJECTILE_OFFSET = 0.25f;
+    constexpr float PROJECTILE_X_LIMIT = 17.0f;
 
     // defaults
+    constexpr float PROJECTILE_MOVE_VAL = 3.0f;
     constexpr float ENEMY_MOVE_VAL = 2.0f;
     constexpr float SCALE_CHANGE_VAL = 4.0f;
     constexpr float DEFAULT_STAR_TIMER = 7;
@@ -36,6 +39,8 @@ namespace PvZ {
     constexpr float DEFAULT_DEFENDER_SCALE = 1; 
     constexpr float DEFAULT_ENEMY_SCALE = 1; 
     constexpr int DEFAULT_ENEMY_HEALTH = 5;
+    constexpr float DEFAULT_FIRE_TIMER = 3.0f;
+    constexpr float PROJECTILE_ROTATION = -3.0f;
 
     // gui
     constexpr float GUI_Y = LOGIC_SPACE_HEIGHT - PADDING - SQUARE_SIDE / 2;
@@ -81,18 +86,18 @@ namespace PvZ {
     const std::string GUI_LIVES_MESH = "livesMesh";
 
     // colors
-    const glm::vec3 RED = glm::vec3(1, 0, 0);
-    const glm::vec3 GREEN = glm::vec3(0.3f, 1, 0.1f);
-    const glm::vec3 PINK = glm::vec3(0.92f, 0.2f, 0.58f);
-    const glm::vec3 BLACK = glm::vec3(0, 0, 0);
-    const glm::vec3 GRAY = glm::vec3(0.5f, 0.5f, 0.5f);
-    const glm::vec3 ORANGE = glm::vec3(0.98f, 0.53f, 0.01f);
-    const glm::vec3 LIGHT_ORANGE = glm::vec3(1.0f, 0.65f, 0.26f);
-    const glm::vec3 BLUE = glm::vec3(0.1f, 0.3f, 1.0f);
-    const glm::vec3 LIGHT_BLUE = glm::vec3(0.1f, 0.6f, 1.0f);
-    const glm::vec3 YELLOW = glm::vec3(0.99, 0.96, 0.1);
-    const glm::vec3 LIGHT_YELLOW = glm::vec3(0.89, 0.81, 0.35);
-    const glm::vec3 PURPLE = glm::vec3(0.69, 0.03, 0.98);
-    const glm::vec3 LIGTH_PURPLE = glm::vec3(0.8, 0.35, 1);
+    constexpr glm::vec3 RED = glm::vec3(1, 0, 0);
+    constexpr glm::vec3 GREEN = glm::vec3(0.3f, 1, 0.1f);
+    constexpr glm::vec3 PINK = glm::vec3(0.92f, 0.2f, 0.58f);
+    constexpr glm::vec3 BLACK = glm::vec3(0, 0, 0);
+    constexpr glm::vec3 GRAY = glm::vec3(0.5f, 0.5f, 0.5f);
+    constexpr glm::vec3 ORANGE = glm::vec3(0.98f, 0.53f, 0.01f);
+    constexpr glm::vec3 LIGHT_ORANGE = glm::vec3(1.0f, 0.65f, 0.26f);
+    constexpr glm::vec3 BLUE = glm::vec3(0.1f, 0.3f, 1.0f);
+    constexpr glm::vec3 LIGHT_BLUE = glm::vec3(0.1f, 0.6f, 1.0f);
+    constexpr glm::vec3 YELLOW = glm::vec3(0.99, 0.96, 0.1);
+    constexpr glm::vec3 LIGHT_YELLOW = glm::vec3(0.89, 0.81, 0.35);
+    constexpr glm::vec3 PURPLE = glm::vec3(0.69, 0.03, 0.98);
+    constexpr glm::vec3 LIGHT_PURPLE = glm::vec3(0.8, 0.35, 1);
     
 }

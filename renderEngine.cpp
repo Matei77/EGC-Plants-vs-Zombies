@@ -58,7 +58,7 @@ void RenderEngine::Init() {
                                                  LIGHT_YELLOW);
     AddMeshToList(yellowEnemyMesh);
     Mesh *purpleEnemyMesh = objects::CreateEnemy(PURPLE_ENEMY_MESH, ENEMY_OUTER_RADIUS, ENEMY_INNER_RADIUS, PURPLE,
-                                                 LIGTH_PURPLE);
+                                                 LIGHT_PURPLE);
     AddMeshToList(purpleEnemyMesh);
 
     // star meshes
@@ -264,6 +264,7 @@ void RenderEngine::SetViewportArea(const ViewportSpace &viewSpace, glm::vec3 col
 void RenderEngine::DrawScene(const glm::mat3 &visMatrix) {
     DrawGUI(visMatrix);
     DrawCreditStars(visMatrix);
+    DrawProjectiles(visMatrix);
     DrawEnemies(visMatrix);
     DrawDefenders(visMatrix);
     DrawMap(visMatrix);
@@ -405,6 +406,17 @@ void RenderEngine::DrawGUI(const glm::mat3 &visMatrix) {
         case purpleType:
             RenderMesh2D(meshes[PURPLE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
             break;
+        }
+    }
+}
+
+void RenderEngine::DrawProjectiles(const glm::mat3 &visMatrix) {
+    for (auto defender : logicsEngine.GetDefenders()) {
+        for (auto projectile : defender.GetProjectiles()) {
+            modelMatrix = visMatrix;
+            modelMatrix *= transform2D::Translate(projectile.GetPosition().x, projectile.GetPosition().y);
+            modelMatrix *= transform2D::Rotate(projectile.GetRotation());
+            RenderMesh2D(meshes[projectile.GetMeshType()], shaders["VertexColor"], modelMatrix);
         }
     }
 }
