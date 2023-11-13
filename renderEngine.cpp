@@ -319,6 +319,27 @@ void RenderEngine::DrawCreditStars(const glm::mat3 &visMatrix) {
 }
 
 void RenderEngine::DrawGUI(const glm::mat3 &visMatrix) {
+    // draw defender drag and drop
+    if (logicsEngine.GetSelectedDefender() != noType) {
+        modelMatrix = visMatrix;
+        modelMatrix *= transform2D::Translate(logicsEngine.GetDragDefenderPos().x, logicsEngine.GetDragDefenderPos().y);
+        modelMatrix *= transform2D::Scale(DRAG_AND_DROP_SCALE, DRAG_AND_DROP_SCALE);
+        switch (logicsEngine.GetSelectedDefender()) {
+        case orangeType:
+            RenderMesh2D(meshes[ORANGE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+            break;
+        case blueType:
+            RenderMesh2D(meshes[BLUE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+            break;
+        case yellowType:
+            RenderMesh2D(meshes[YELLOW_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+            break;
+        case purpleType:
+            RenderMesh2D(meshes[PURPLE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
+            break;
+        }
+    }
+    
     // draw defender types squares with prices
     for (int i = 0; i < 4; i++) {
         float priceX = PADDING * (i + 1) + SQUARE_SIDE * i + GRAY_STAR_RADIUS;
@@ -389,27 +410,6 @@ void RenderEngine::DrawGUI(const glm::mat3 &visMatrix) {
         modelMatrix *= transform2D::Translate(CREDIT_STAR_START_X + GRAY_STAR_RADIUS + (GRAY_STAR_RADIUS * 2) * (i % 9),
                                               CREDIT_STAR_START_Y - (GRAY_STAR_RADIUS * 2) * (i / 9));
         RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
-    }
-
-    // draw defender drag and drop
-    if (logicsEngine.GetSelectedDefender() != noType) {
-        modelMatrix = visMatrix;
-        modelMatrix *= transform2D::Translate(logicsEngine.GetDragDefenderPos().x, logicsEngine.GetDragDefenderPos().y);
-        modelMatrix *= transform2D::Scale(DRAG_AND_DROP_SCALE, DRAG_AND_DROP_SCALE);
-        switch (logicsEngine.GetSelectedDefender()) {
-        case orangeType:
-            RenderMesh2D(meshes[ORANGE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
-            break;
-        case blueType:
-            RenderMesh2D(meshes[BLUE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
-            break;
-        case yellowType:
-            RenderMesh2D(meshes[YELLOW_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
-            break;
-        case purpleType:
-            RenderMesh2D(meshes[PURPLE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
-            break;
-        }
     }
 }
 
