@@ -29,18 +29,19 @@ namespace PvZ {
     constexpr int GRID_SIDE = 3;
     constexpr float PROJECTILE_OFFSET = 0.25f;
     constexpr float PROJECTILE_X_LIMIT = 17.0f;
+    constexpr float HIT_OFFSET = 0.25f;
 
     // defaults
-    constexpr float PROJECTILE_MOVE_VAL = 3.0f;
-    constexpr float ENEMY_MOVE_VAL = 2.0f;
+    constexpr float PROJECTILE_MOVE_VAL = 5.0f;
+    constexpr float ENEMY_MOVE_VAL = 1.25f;
     constexpr float SCALE_CHANGE_VAL = 4.0f;
     constexpr float DEFAULT_STAR_TIMER = 7;
     constexpr float DEFAULT_BLINK_TIMER = 0.2f;
     constexpr float DEFAULT_DEFENDER_SCALE = 1; 
     constexpr float DEFAULT_ENEMY_SCALE = 1; 
-    constexpr int DEFAULT_ENEMY_HEALTH = 5;
-    constexpr float DEFAULT_FIRE_TIMER = 3.0f;
-    constexpr float PROJECTILE_ROTATION = -3.0f;
+    constexpr int DEFAULT_ENEMY_HEALTH = 2;
+    constexpr float DEFAULT_FIRE_TIMER = 2.0f;
+    constexpr float PROJECTILE_ROTATION = -6.0f;
 
     // gui
     constexpr float GUI_Y = LOGIC_SPACE_HEIGHT - PADDING - SQUARE_SIDE / 2;

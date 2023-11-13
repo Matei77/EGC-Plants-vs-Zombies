@@ -23,9 +23,16 @@ void LogicsEngine::SpawnCreditStar(const Position position) {
 }
 
 void LogicsEngine::Update(const float deltaTime) {
-    // if (!playerLives) {
-    //     return;
-    // }
+    if (!playerLives) {
+        enemies.clear();
+        defenders.clear();
+        creditStars.clear();
+        playerCredit = 0;
+        for (auto &i : grid)
+            for (auto &j : i)
+                j.occupied = false;
+        return;
+    }
 
     // spawn enemies randomly
     for (std::vector<float>::size_type i = 0; i != enemySpawnTimers.size(); i++) {
@@ -39,7 +46,7 @@ void LogicsEngine::Update(const float deltaTime) {
                 break;
             default: ;
             }
-            enemySpawnTimers[i] = (rand() % 100) / 10.0f + 3;
+            enemySpawnTimers[i] = (rand() % 100) / 10.0f + 7;
         }
         else {
             enemySpawnTimers[i] -= 1 * deltaTime;
@@ -70,6 +77,9 @@ void LogicsEngine::Update(const float deltaTime) {
                 playerLives--;
             }
         }
+        else if (enemy.GetScale() > 0 && enemy.GetHealth() <= 0) {
+            enemy.SetScale(enemy.GetScale() - SCALE_CHANGE_VAL * deltaTime);
+        }
         else {
             position.x -= ENEMY_MOVE_VAL * deltaTime;
             enemy.SetPosition(position);
@@ -95,7 +105,8 @@ void LogicsEngine::Update(const float deltaTime) {
     // spawn projectiles
     for (auto &defender : defenders) {
         for (auto enemy : enemies) {
-            if (defender.GetPosition().y == enemy.GetPosition().y && defender.GetColor() == enemy.GetColor()) {
+            if (defender.GetPosition().y == enemy.GetPosition().y && defender.GetColor() == enemy.GetColor() && defender
+                .GetPosition().x < enemy.GetPosition().x) {
                 if (defender.GetFireTimer() <= 0) {
                     defender.SpawnProjectile();
                     defender.SetFireTimer(DEFAULT_FIRE_TIMER);
@@ -113,15 +124,43 @@ void LogicsEngine::Update(const float deltaTime) {
             Position position = projectile.GetPosition();
 
             if (position.x >= PROJECTILE_X_LIMIT) {
-                // check for collisions
                 projectile.SetHit(true);
             }
             else {
                 position.x += PROJECTILE_MOVE_VAL * deltaTime;
                 projectile.SetPosition(position);
                 projectile.SetRotation(projectile.GetRotation() + PROJECTILE_ROTATION * deltaTime);
+
+                // check for enemy hit
+                for (auto &enemy : enemies) {
+                    if (enemy.GetPosition().y == projectile.GetPosition().y &&
+                        enemy.GetColor() == projectile.GetColor() &&
+                        projectile.IsHit() == false &&
+                        abs(enemy.GetPosition().x - projectile.GetPosition().x) < ENEMY_OUTER_RADIUS + STAR_RADIUS -
+                        HIT_OFFSET) {
+                        enemy.SetHealth(enemy.GetHealth() - 1);
+                        projectile.SetHit(true);
+                    }
+                }
             }
         }
+
+    // defender scale down animation
+    for (auto &defender : defenders) {
+        if (defender.IsAlive() == false && defender.GetScale() > 0) {
+            defender.SetScale(defender.GetScale() - SCALE_CHANGE_VAL * deltaTime);
+        }
+
+        for (auto &enemy : enemies) {
+            if (enemy.GetPosition().y == defender.GetPosition().y &&
+                abs(enemy.GetPosition().x - defender.GetPosition().x) < ENEMY_OUTER_RADIUS + DEFENDER_WIDTH -
+                HIT_OFFSET && defender.IsAlive() == true) {
+                grid[logicToGridIndexX(defender.GetPosition().x)][logicToGridIndexY(defender.GetPosition().y)].occupied
+                        = false;
+                defender.SetAlive(false);
+            }
+        }
+    }
 
     // delete dead enemies
     enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
@@ -130,7 +169,7 @@ void LogicsEngine::Update(const float deltaTime) {
 
     // delete dead defenders
     defenders.erase(std::remove_if(defenders.begin(), defenders.end(),
-                                   [](Defender defender) { return defender.IsAlive() == false; }),
+                                   [](Defender defender) { return defender.GetScale() <= 0; }),
                     defenders.end());
 
     // delete expired stars
@@ -164,9 +203,9 @@ void LogicsEngine::InitLogicsEngine() {
     prices.insert({purpleType, 3});
 
     // set the enemy spawn timer on each lane
-    enemySpawnTimers.push_back(rand() % 100 / 10.0f + 2);
-    enemySpawnTimers.push_back(rand() % 100 / 10.0f + 2);
-    enemySpawnTimers.push_back(rand() % 100 / 10.0f + 2);
+    enemySpawnTimers.push_back(rand() % 100 / 10.0f + 5);
+    enemySpawnTimers.push_back(rand() % 100 / 10.0f + 5);
+    enemySpawnTimers.push_back(rand() % 100 / 10.0f + 5);
     creditStarSpawnTimer = rand() % 2 + 1;
 
     // init grid positions
@@ -174,5 +213,6 @@ void LogicsEngine::InitLogicsEngine() {
         for (int j = 0; j < 3; j++) {
             grid[i][j].position.x = PADDING * 2 + END_ZONE_WIDTH + (PADDING + SQUARE_SIDE) * i + SQUARE_SIDE / 2;
             grid[i][j].position.y = PADDING + (PADDING + SQUARE_SIDE) * j + SQUARE_SIDE / 2;
+            grid[i][j].occupied = false;
         }
 }

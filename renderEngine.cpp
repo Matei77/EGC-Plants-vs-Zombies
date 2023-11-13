@@ -106,6 +106,9 @@ void RenderEngine::OnInputUpdate(float deltaTime, int mods) {
 
 void RenderEngine::OnKeyPress(int key, int mods) {
     // Add key press event
+    if (key == GLFW_KEY_R && logicsEngine.GetPlayerLives() == 0) {
+        logicsEngine.SetPlayerLives(3);
+    }
 }
 
 
@@ -328,7 +331,7 @@ void RenderEngine::DrawGUI(const glm::mat3 &visMatrix) {
             // draw defender
             RenderMesh2D(meshes[ORANGE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
 
-        // draw price
+            // draw price
             modelMatrix = visMatrix;
             modelMatrix *= transform2D::Translate(priceX, PRICE_Y);
             RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
@@ -337,7 +340,7 @@ void RenderEngine::DrawGUI(const glm::mat3 &visMatrix) {
             // draw defender
             RenderMesh2D(meshes[BLUE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
 
-        // draw price
+            // draw price
             modelMatrix = visMatrix;
             modelMatrix *= transform2D::Translate(priceX, PRICE_Y);
             RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
@@ -348,7 +351,7 @@ void RenderEngine::DrawGUI(const glm::mat3 &visMatrix) {
             // draw defender
             RenderMesh2D(meshes[YELLOW_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
 
-        // draw price
+            // draw price
             modelMatrix = visMatrix;
             modelMatrix *= transform2D::Translate(priceX, PRICE_Y);
             RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
@@ -359,7 +362,7 @@ void RenderEngine::DrawGUI(const glm::mat3 &visMatrix) {
             // draw defender
             RenderMesh2D(meshes[PURPLE_DEFENDER_MESH], shaders["VertexColor"], modelMatrix);
 
-        // draw price
+            // draw price
             modelMatrix = visMatrix;
             modelMatrix *= transform2D::Translate(priceX, PRICE_Y);
             RenderMesh2D(meshes[GRAY_STAR_MESH], shaders["VertexColor"], modelMatrix);
@@ -381,7 +384,7 @@ void RenderEngine::DrawGUI(const glm::mat3 &visMatrix) {
     }
 
     // draw credit stars
-    for (int i = 0; i < logicsEngine.GetPlayerCredit(); i++) {
+    for (int i = 0; i < logicsEngine.GetPlayerCredit() && i < 9 * 4; i++) {
         modelMatrix = visMatrix;
         modelMatrix *= transform2D::Translate(CREDIT_STAR_START_X + GRAY_STAR_RADIUS + (GRAY_STAR_RADIUS * 2) * (i % 9),
                                               CREDIT_STAR_START_Y - (GRAY_STAR_RADIUS * 2) * (i / 9));
