@@ -12,12 +12,11 @@ namespace PvZ {
         int health;
         std::string meshType;
         bool reachedEnd;
+        Type color;
 
     public:
-        Enemy(const Position &position, Type color) : position(position) {
-            scale = DEFAULT_ENEMY_SCALE;
-            health = DEFAULT_ENEMY_HEALTH;
-            reachedEnd = false;
+        Enemy(const Position &position, Type color) : position(position), color(color), scale(DEFAULT_ENEMY_SCALE),
+                                                      health(DEFAULT_ENEMY_HEALTH), reachedEnd(false) {
             switch (color) {
             case orangeType: meshType = ORANGE_ENEMY_MESH;
                 break;
@@ -40,5 +39,7 @@ namespace PvZ {
         void SetHealth(const int health) { this->health = health; }
         bool ReachedEnd() const { return reachedEnd; }
         void SetReachedEnd(const bool reachedEnd) { this->reachedEnd = reachedEnd; }
+        Type GetColor() const { return color; }
+        
     };
 }
