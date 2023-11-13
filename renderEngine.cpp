@@ -121,7 +121,7 @@ void RenderEngine::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY) {
 
     float logicMouseX = logicMouse[0];
     float logicMouseY = logicMouse[1];
-    
+
     logicsEngine.SetDragDefenderPos({logicMouseX, logicMouseY});
 }
 
@@ -135,6 +135,7 @@ void RenderEngine::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
     float logicMouseY = logicMouse[1];
 
     if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+        // ---- click stars ----
         for (auto &star : logicsEngine.GetCreditStars()) {
             if ((logicMouseX - star.GetPosition().x) * (logicMouseX - star.GetPosition().x) +
                 (logicMouseY - star.GetPosition().y) * (logicMouseY - star.GetPosition().y) <= STAR_RADIUS *
@@ -144,6 +145,7 @@ void RenderEngine::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
             }
         }
 
+        // ---- select drag and drop defender ----
         // orange defender select
         float defenderPosX = PADDING + SQUARE_SIDE / 2;
         float defenderPosY = GUI_Y;
@@ -183,6 +185,20 @@ void RenderEngine::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
             }
         }
     }
+
+    if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+        // ---- delete defender with right click ----
+        for (auto &defender : logicsEngine.GetDefenders()) {
+            float defX = defender.GetPosition().x;
+            float defY = defender.GetPosition().y;
+            
+            if (defX - SQUARE_SIDE / 2 < logicMouseX && logicMouseX < defX + SQUARE_SIDE / 2 &&
+                defY - SQUARE_SIDE / 2 < logicMouseY && logicMouseY < defY + SQUARE_SIDE / 2) {
+                defender.SetAlive(false);
+                logicsEngine.GetGridSquare(logicToGridIndexX(defX), logicToGridIndexY(defY)).occupied = false;
+            }
+        }
+    }
 }
 
 
@@ -190,22 +206,22 @@ void RenderEngine::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mod
     // Add mouse button release event
     glm::vec3 viewMouse = glm::vec3(mouseX, viewSpace.height - mouseY, 1);
     glm::vec3 logicMouse = glm::inverse(visMatrix) * viewMouse;
-    
+
     float logicMouseX = logicMouse[0];
     float logicMouseY = logicMouse[1];
-    
+
     if (button == GLFW_MOUSE_BUTTON_RIGHT) {
         for (int i = 0; i < GRID_SIDE; i++) {
             for (int j = 0; j < GRID_SIDE; j++) {
                 float squarePosX = logicsEngine.GetGridSquare(i, j).position.x;
                 float squarePosY = logicsEngine.GetGridSquare(i, j).position.y;
-        
+
                 if (squarePosX - SQUARE_SIDE / 2 < logicMouseX && logicMouseX < squarePosX + SQUARE_SIDE / 2 &&
                     squarePosY - SQUARE_SIDE / 2 < logicMouseY && logicMouseY < squarePosY + SQUARE_SIDE / 2 &&
                     logicsEngine.GetGridSquare(i, j).occupied == false && logicsEngine.GetSelectedDefender() !=
                     noType) {
                     logicsEngine.SpawnDefender({squarePosX, squarePosY}, logicsEngine.GetSelectedDefender());
-                
+
                     // charge the player the appropriate number of stars for placing a defender
                     logicsEngine.SetPlayerCredit(
                         logicsEngine.GetPlayerCredit() - logicsEngine.GetPrices().

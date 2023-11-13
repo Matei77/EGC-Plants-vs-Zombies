@@ -29,4 +29,7 @@ namespace PvZ {
         Position(const float x, const float y) : x(x), y(y) {}
         float x, y;
     };
+
+    int logicToGridIndexX (float logicX);
+    int logicToGridIndexY (float logicY);
 }

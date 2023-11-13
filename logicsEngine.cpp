@@ -26,6 +26,7 @@ void LogicsEngine::Update(const float deltaTime) {
     if (!playerLives) {
         return;
     }
+    
     // spawn enemies randomly
     for (std::vector<float>::size_type i = 0; i != enemySpawnTimers.size(); i++) {
         if (enemySpawnTimers[i] <= 0) {
@@ -40,7 +41,8 @@ void LogicsEngine::Update(const float deltaTime) {
             enemySpawnTimers[i] -= 1 * deltaTime;
         }
     }
-
+    
+    // spawn stars randomly
     if (creditStarSpawnTimer <= 0) {
         SpawnCreditStar({static_cast<float>(rand() % 10 + 6.5), static_cast<float>(rand() % 6 + 1)});
         SpawnCreditStar({static_cast<float>(rand() % 10 + 6.5), static_cast<float>(rand() % 6 + 1)});
@@ -86,6 +88,10 @@ void LogicsEngine::Update(const float deltaTime) {
     // delete dead enemies
     enemies.erase(std::remove_if(enemies.begin(), enemies.end(), [](Enemy enemy) { return enemy.GetScale() <= 0; }),
                   enemies.end());
+
+    // delete dead defenders
+    defenders.erase(std::remove_if(defenders.begin(), defenders.end(), [](Defender defender) { return defender.IsAlive() == false; }),
+                  defenders.end());
 
     // delete expired stars
     creditStars.erase(std::remove_if(creditStars.begin(), creditStars.end(), [](CreditStar star) {return star.GetTimer() <= 0; }),

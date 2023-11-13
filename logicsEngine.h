@@ -35,16 +35,10 @@ namespace PvZ {
         void SpawnDefender(Position position, Type type);
         void SpawnCreditStar(Position position);
         void Update(float deltaTime);
-        
-        // safely get grid square
-        GridSquare & GetGridSquare(const int i, const int j) {
-            if (i < GRID_SIDE && i >= 0 && j < GRID_SIDE && j >= 0)
-                return grid[i][j];
-            return grid[0][0];
-        }
-        std::vector<Enemy> GetEnemies() const { return enemies; }
-        std::vector<Defender> GetDefenders() const { return defenders; }
         void InitLogicsEngine();
+        
+        std::vector<Enemy> GetEnemies() const { return enemies; }
+        std::vector<Defender> & GetDefenders() { return defenders; }
         std::vector<CreditStar> & GetCreditStars() { return creditStars; }
         int GetPlayerCredit() const { return playerCredit; }
         void SetPlayerCredit(const int playerCredit) { this->playerCredit = playerCredit; }
@@ -55,5 +49,12 @@ namespace PvZ {
         std::unordered_map<Type, int> GetPrices() const { return prices; }
         Position GetDragDefenderPos() const { return dragDefenderPos; }
         void SetDragDefenderPos(const Position &dragDefenderPos) { this->dragDefenderPos = dragDefenderPos; }
+
+        // safely get grid square
+        GridSquare & GetGridSquare(const int i, const int j) {
+            if (i < GRID_SIDE && i >= 0 && j < GRID_SIDE && j >= 0)
+                return grid[i][j];
+            return grid[0][0];
+        }
     };
 }
