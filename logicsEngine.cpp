@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
+#include <glm/geometric.hpp>
 
 using namespace PvZ;
 
@@ -133,11 +134,11 @@ void LogicsEngine::Update(const float deltaTime) {
 
                 // check for enemy hit
                 for (auto &enemy : enemies) {
-                    if (enemy.GetPosition().y == projectile.GetPosition().y &&
-                        enemy.GetColor() == projectile.GetColor() &&
+                    if (enemy.GetColor() == projectile.GetColor() &&
                         projectile.IsHit() == false &&
-                        abs(enemy.GetPosition().x - projectile.GetPosition().x) < ENEMY_OUTER_RADIUS + STAR_RADIUS -
-                        HIT_OFFSET) {
+                        glm::distance(glm::vec3(enemy.GetPosition().x, enemy.GetPosition().y, 0),
+                                      glm::vec3(projectile.GetPosition().x, projectile.GetPosition().y, 0)) <
+                        ENEMY_OUTER_RADIUS + STAR_RADIUS - HIT_OFFSET) {
                         enemy.SetHealth(enemy.GetHealth() - 1);
                         projectile.SetHit(true);
                     }
