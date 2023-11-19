@@ -21,8 +21,8 @@ namespace PvZ {
         std::vector<Enemy> enemies;
         std::vector<Defender> defenders;
         std::vector<float> enemySpawnTimers;
-        float creditStarSpawnTimer;
         std::vector<CreditStar> creditStars;
+        float creditStarSpawnTimer;
         int playerCredit;
         int playerLives;
         
@@ -31,11 +31,12 @@ namespace PvZ {
         Position dragDefenderPos;
 
     public:
+        LogicsEngine();
+        
         void SpawnEnemy(Position position, Type type);
         void SpawnDefender(Position position, Type type);
         void SpawnCreditStar(Position position);
         void Update(float deltaTime);
-        void InitLogicsEngine();
         
         std::vector<Enemy> GetEnemies() const { return enemies; }
         std::vector<Defender> & GetDefenders() { return defenders; }

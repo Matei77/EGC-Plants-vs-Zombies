@@ -29,7 +29,8 @@ namespace PvZ {
                 break;
             case purpleType: meshType = PURPLE_DEFENDER_MESH;
                 break;
-            default: ;
+            case noType: meshType = GUI_SQUARE_MESH;
+                break;
             }
         }
 

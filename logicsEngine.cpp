@@ -29,9 +29,6 @@ void LogicsEngine::Update(const float deltaTime) {
         defenders.clear();
         creditStars.clear();
         playerCredit = 0;
-        for (auto &i : grid)
-            for (auto &j : i)
-                j.occupied = false;
         return;
     }
 
@@ -106,8 +103,8 @@ void LogicsEngine::Update(const float deltaTime) {
     // spawn projectiles
     for (auto &defender : defenders) {
         for (auto enemy : enemies) {
-            if (defender.GetPosition().y == enemy.GetPosition().y && defender.GetColor() == enemy.GetColor() && defender
-                .GetPosition().x < enemy.GetPosition().x) {
+            if (defender.GetPosition().y == enemy.GetPosition().y && defender.GetColor() == enemy.GetColor() &&
+                defender.GetPosition().x < enemy.GetPosition().x) {
                 if (defender.GetFireTimer() <= 0) {
                     defender.SpawnProjectile();
                     defender.SetFireTimer(DEFAULT_FIRE_TIMER);
@@ -152,6 +149,7 @@ void LogicsEngine::Update(const float deltaTime) {
             defender.SetScale(defender.GetScale() - SCALE_CHANGE_VAL * deltaTime);
         }
 
+        // check defender-enemy collision
         for (auto &enemy : enemies) {
             if (enemy.GetPosition().y == defender.GetPosition().y &&
                 abs(enemy.GetPosition().x - defender.GetPosition().x) < ENEMY_OUTER_RADIUS + DEFENDER_WIDTH -
@@ -189,13 +187,14 @@ void LogicsEngine::Update(const float deltaTime) {
     }
 }
 
-void LogicsEngine::InitLogicsEngine() {
+LogicsEngine::LogicsEngine() {
     // set seed
     srand(time(NULL));
 
     // set initial player credit and lives
     playerCredit = 0;
     playerLives = 3;
+    selectedDefender = noType;
 
     // set prices
     prices.insert({orangeType, 1});

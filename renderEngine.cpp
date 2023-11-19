@@ -72,6 +72,7 @@ void RenderEngine::Init() {
     AddMeshToList(pinkStarMesh);
     Mesh *grayStarMesh = objects::CreateStar(GRAY_STAR_MESH, GRAY_STAR_RADIUS, GRAY);
     AddMeshToList(grayStarMesh);
+    
 }
 
 void RenderEngine::FrameStart() {
@@ -104,8 +105,10 @@ void RenderEngine::OnInputUpdate(float deltaTime, int mods) {
 
 void RenderEngine::OnKeyPress(int key, int mods) {
     // Add key press event
-    if (key == GLFW_KEY_R && logicsEngine.GetPlayerLives() == 0) {
-        logicsEngine.SetPlayerLives(3);
+
+    // press R to restart the game
+    if (key == GLFW_KEY_R) {
+        logicsEngine = LogicsEngine();
     }
 }
 
@@ -135,6 +138,7 @@ void RenderEngine::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
     float logicMouseX = logicMouse[0];
     float logicMouseY = logicMouse[1];
 
+    // use left click (GLFW_MOUSE_BUTTON_RIGHT is left click on my laptop, might be different on other systems)
     if (button == GLFW_MOUSE_BUTTON_RIGHT) {
         // ---- click stars ----
         for (auto &star : logicsEngine.GetCreditStars()) {
@@ -187,6 +191,7 @@ void RenderEngine::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
         }
     }
 
+    // use right click (GLFW_MOUSE_BUTTON_MIDDLE is right click on my laptop, might be different on other systems)
     if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
         // ---- delete defender with right click ----
         for (auto &defender : logicsEngine.GetDefenders()) {
@@ -211,6 +216,7 @@ void RenderEngine::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mod
     float logicMouseX = logicMouse[0];
     float logicMouseY = logicMouse[1];
 
+    // use left click (GLFW_MOUSE_BUTTON_RIGHT is left click on my laptop, might be different on other systems)
     if (button == GLFW_MOUSE_BUTTON_RIGHT) {
         for (int i = 0; i < GRID_SIDE; i++) {
             for (int j = 0; j < GRID_SIDE; j++) {
@@ -290,8 +296,8 @@ void RenderEngine::DrawMap(const glm::mat3 &visMatrix) {
 void RenderEngine::DrawEnemies(const glm::mat3 &visMatrix) {
     for (const auto &enemy : logicsEngine.GetEnemies()) {
         modelMatrix = visMatrix;
-        modelMatrix *= animations::MoveEnemy(enemy.GetPosition().x, enemy.GetPosition().y);
-        modelMatrix *= animations::DestroyObject(enemy.GetScale());
+        modelMatrix *= transform2D::Translate(enemy.GetPosition().x, enemy.GetPosition().y);
+        modelMatrix *= transform2D::Scale(enemy.GetScale(), enemy.GetScale());
 
         RenderMesh2D(meshes[enemy.GetMeshType()], shaders["VertexColor"], modelMatrix);
     }
@@ -300,8 +306,8 @@ void RenderEngine::DrawEnemies(const glm::mat3 &visMatrix) {
 void RenderEngine::DrawDefenders(const glm::mat3 &visMatrix) {
     for (const auto &defender : logicsEngine.GetDefenders()) {
         modelMatrix = visMatrix;
-        modelMatrix *= animations::MoveEnemy(defender.GetPosition().x, defender.GetPosition().y);
-        modelMatrix *= animations::DestroyObject(defender.GetScale());
+        modelMatrix *= transform2D::Translate(defender.GetPosition().x, defender.GetPosition().y);
+        modelMatrix *= transform2D::Scale(defender.GetScale(), defender.GetScale());
         RenderMesh2D(meshes[defender.GetMeshType()], shaders["VertexColor"], modelMatrix);
     }
 }
@@ -310,7 +316,7 @@ void RenderEngine::DrawCreditStars(const glm::mat3 &visMatrix) {
     for (const auto &star : logicsEngine.GetCreditStars()) {
         if (star.IsVisible()) {
             modelMatrix = visMatrix;
-            modelMatrix *= animations::MoveEnemy(star.GetPosition().x, star.GetPosition().y);
+            modelMatrix *= transform2D::Translate(star.GetPosition().x, star.GetPosition().y);
             RenderMesh2D(meshes[PINK_STAR_MESH], shaders["VertexColor"], modelMatrix);
         }
     }

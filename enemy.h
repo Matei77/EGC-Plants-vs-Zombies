@@ -8,11 +8,11 @@ namespace PvZ {
     class Enemy {
     private:
         Position position;
+        Type color;
         float scale;
         int health;
         std::string meshType;
         bool reachedEnd;
-        Type color;
 
     public:
         Enemy(const Position &position, Type color) : position(position), color(color), scale(DEFAULT_ENEMY_SCALE),
@@ -26,7 +26,8 @@ namespace PvZ {
                 break;
             case purpleType: meshType = PURPLE_ENEMY_MESH;
                 break;
-            default: ;
+            case noType: meshType = GUI_SQUARE_MESH;
+                break;
             }
         }
 

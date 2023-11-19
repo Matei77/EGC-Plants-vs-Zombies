@@ -11,11 +11,8 @@ namespace PvZ {
         bool visible;
 
     public:
-        CreditStar(Position position) : position(position) {
-            timer = DEFAULT_STAR_TIMER;
-            blink_timer = DEFAULT_BLINK_TIMER;
-            visible = true;
-        }
+        CreditStar(Position position) : position(position), timer(DEFAULT_STAR_TIMER),
+                                        blink_timer(DEFAULT_BLINK_TIMER), visible(true)  { }
 
         float GetTimer() const { return timer; }
         void SetTimer(const float timer) { this->timer = timer; }
