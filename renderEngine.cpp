@@ -2,16 +2,12 @@
 
 #include <vector>
 #include <iostream>
-#include <iso646.h>
 
 #include "transform2D.h"
 #include "objects.h"
-#include "animations.h"
-#include "lab_m1/lab3/transform2D.h"
 
 using namespace std;
 using namespace PvZ;
-
 
 void RenderEngine::Init() {
     const auto camera = GetSceneCamera();
@@ -25,17 +21,19 @@ void RenderEngine::Init() {
     logicSpace.width = LOGIC_SPACE_WIDTH;
     logicSpace.height = LOGIC_SPACE_HEIGHT;
 
-    logicsEngine.InitLogicsEngine();
-
     // map meshes
     Mesh *endZoneMesh = objects::CreateRectangle(END_ZONE_MESH, END_ZONE_WIDTH, END_ZONE_HEIGHT, RED, true);
     AddMeshToList(endZoneMesh);
     Mesh *squareMesh = objects::CreateRectangle(SQUARE_MESH, SQUARE_SIDE, SQUARE_SIDE, GREEN, true);
     AddMeshToList(squareMesh);
+
+    // gui meshes
     Mesh *guiSquareMesh = objects::CreateRectangle(GUI_SQUARE_MESH, SQUARE_SIDE, SQUARE_SIDE, BLACK, false);
     AddMeshToList(guiSquareMesh);
-    Mesh *guiLivesMesh = objects::CreateRectangle(GUI_LIVES_MESH, LIFE_SIDE, LIFE_SIDE, RED, true);
-    AddMeshToList(guiLivesMesh);
+    // Mesh *guiLivesMesh = objects::CreateRectangle(GUI_LIVES_MESH, LIFE_SIDE, LIFE_SIDE, RED, true);
+    // AddMeshToList(guiLivesMesh);
+    Mesh *hearthMesh = objects::CreateHearth(GUI_LIVES_MESH, LIFE_SIDE, LIFE_SIDE, RED);
+    AddMeshToList(hearthMesh);
 
     // defender meshes
     Mesh *orangeDefenderMesh = objects::CreateDefender(ORANGE_DEFENDER_MESH, DEFENDER_WIDTH, DEFENDER_HEIGHT, ORANGE);

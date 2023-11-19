@@ -155,7 +155,6 @@ Mesh *objects::CreateStar(const std::string &name,
 
     const std::vector<VertexFormat> vertices =
     {
-        // outer hex
         VertexFormat(glm::vec3(xA, yA, 0), color),
         VertexFormat(glm::vec3(xB, yB, 0), color),
         VertexFormat(glm::vec3(xC, yC, 0), color),
@@ -175,4 +174,38 @@ Mesh *objects::CreateStar(const std::string &name,
 
     star->InitFromData(vertices, indices);
     return star;
+}
+
+Mesh * objects::CreateHearth(const std::string &name, float width, float height, glm::vec3 color) {
+    const std::vector<VertexFormat> vertices =
+   {
+        VertexFormat(glm::vec3(0, height / 8 * 3, 0), color),
+
+        VertexFormat(glm::vec3(-width / 8, height / 2, 0), color),
+        VertexFormat(glm::vec3(-width / 8 * 3, height / 2, 0), color),
+        VertexFormat(glm::vec3(-width / 2, height / 8 * 3, 0), color),
+        VertexFormat(glm::vec3(-width / 2, 0, 0), color),
+
+        VertexFormat(glm::vec3(0, -height / 2, 0), color),
+        
+        VertexFormat(glm::vec3(width / 2, 0, 0), color),
+        VertexFormat(glm::vec3(width / 2, height / 8 * 3, 0), color),
+        VertexFormat(glm::vec3(width / 8 * 3, height / 2, 0), color),
+        VertexFormat(glm::vec3(width / 8, height / 2, 0), color),
+    };
+
+    Mesh *hearth = new Mesh(name);
+    const std::vector<unsigned int> indices = {
+        0, 1, 2,
+        0, 2, 3,
+        0, 3, 4,
+        0, 4, 5,
+        0, 5, 6,
+        0, 6, 7,
+        0, 7, 8,
+        0, 8, 9
+    };
+
+    hearth->InitFromData(vertices, indices);
+    return hearth;
 }

@@ -24,5 +24,10 @@ namespace PvZ {
         Mesh *CreateStar(const std::string &name,
                          float outer_radius,
                          glm::vec3 color);
+
+        Mesh *CreateHearth(const std::string &name,
+                            float width,
+                            float height,
+                            glm::vec3 color);
     }
 }
