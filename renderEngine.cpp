@@ -30,8 +30,6 @@ void RenderEngine::Init() {
     // gui meshes
     Mesh *guiSquareMesh = objects::CreateRectangle(GUI_SQUARE_MESH, SQUARE_SIDE, SQUARE_SIDE, BLACK, false);
     AddMeshToList(guiSquareMesh);
-    // Mesh *guiLivesMesh = objects::CreateRectangle(GUI_LIVES_MESH, LIFE_SIDE, LIFE_SIDE, RED, true);
-    // AddMeshToList(guiLivesMesh);
     Mesh *hearthMesh = objects::CreateHearth(GUI_LIVES_MESH, LIFE_SIDE, LIFE_SIDE, RED);
     AddMeshToList(hearthMesh);
 
@@ -44,7 +42,9 @@ void RenderEngine::Init() {
     AddMeshToList(yellowDefenderMesh);
     Mesh *purpleDefenderMesh = objects::CreateDefender(PURPLE_DEFENDER_MESH, DEFENDER_WIDTH, DEFENDER_HEIGHT, PURPLE);
     AddMeshToList(purpleDefenderMesh);
-
+    Mesh *lawnMowerMesh = objects::CreateLawnMower(LAWN_MOWER_MESH, LAWN_MOWER_WIDTH, LAWN_MOWER_HEIGHT, CYAN, DARK_GRAY);
+    AddMeshToList(lawnMowerMesh);
+    
     // enemy meshes
     Mesh *orangeEnemyMesh = objects::CreateEnemy(ORANGE_ENEMY_MESH, ENEMY_OUTER_RADIUS, ENEMY_INNER_RADIUS, ORANGE,
                                                  LIGHT_ORANGE);
@@ -85,7 +85,7 @@ void RenderEngine::FrameStart() {
 void RenderEngine::Update(float deltaTimeSeconds) {
     const glm::ivec2 resolution = window->GetResolution();
     viewSpace = ViewportSpace(0, 0, resolution.x, resolution.y);
-    SetViewportArea(viewSpace, glm::vec3(0.1f, 0.1f, 0.1f), true);
+    SetViewportArea(viewSpace, BACKGROUND, true);
 
     visMatrix = glm::mat3(1);
     visMatrix *= transform2D::VisualizationTransf2DUnif(logicSpace, viewSpace);
@@ -268,10 +268,12 @@ void RenderEngine::SetViewportArea(const ViewportSpace &viewSpace, glm::vec3 col
     GetSceneCamera()->Update();
 }
 
+
 void RenderEngine::DrawScene(const glm::mat3 &visMatrix) {
     DrawGUI(visMatrix);
     DrawCreditStars(visMatrix);
     DrawProjectiles(visMatrix);
+    DrawLawnMowers(visMatrix);
     DrawEnemies(visMatrix);
     DrawDefenders(visMatrix);
     DrawMap(visMatrix);
@@ -425,5 +427,12 @@ void RenderEngine::DrawProjectiles(const glm::mat3 &visMatrix) {
             modelMatrix *= transform2D::Rotate(projectile.GetRotation());
             RenderMesh2D(meshes[projectile.GetMeshType()], shaders["VertexColor"], modelMatrix);
         }
+    }
+}
+void RenderEngine::DrawLawnMowers(const glm::mat3 &visMatrix) {
+    for (auto lawnMower : logicsEngine.GetLawnMowers()) {
+        modelMatrix = visMatrix;
+        modelMatrix *= transform2D::Translate(lawnMower.GetPosition().x, lawnMower.GetPosition().y);
+        RenderMesh2D(meshes[LAWN_MOWER_MESH], shaders["VertexColor"], modelMatrix);
     }
 }

@@ -209,3 +209,54 @@ Mesh * objects::CreateHearth(const std::string &name, float width, float height,
     hearth->InitFromData(vertices, indices);
     return hearth;
 }
+
+Mesh * objects::CreateLawnMower(const std::string &name, float width, float height, glm::vec3 first_color, glm::vec3 second_color) {
+    const std::vector<VertexFormat> vertices =
+   {
+        // base
+        VertexFormat(glm::vec3(width / 5 * 2, height / 6, 0), first_color),
+        VertexFormat(glm::vec3(-width / 5 * 2, height / 6, 0), first_color),
+        VertexFormat(glm::vec3(-width / 5 * 2, -height / 6, 0), first_color),
+        VertexFormat(glm::vec3(width / 5 * 2, -height / 6, 0), first_color),
+
+        // wheel 1
+        VertexFormat(glm::vec3(-width / 10 * 3, 0, 0), second_color),
+        VertexFormat(glm::vec3(-width / 2, 0, 0), second_color),
+        VertexFormat(glm::vec3(-width / 2, -height / 3, 0), second_color),
+        VertexFormat(glm::vec3(-width / 10 * 3, -height / 3, 0), second_color),
+
+        // wheel 2
+        VertexFormat(glm::vec3(width / 2, 0, 0), second_color),
+        VertexFormat(glm::vec3(width / 10 * 3, 0, 0), second_color),
+        VertexFormat(glm::vec3(width / 10 * 3, -height / 3, 0), second_color),
+        VertexFormat(glm::vec3(width / 2, -height / 3, 0), second_color),
+
+        // handle
+        VertexFormat(glm::vec3(-width / 10 * 3, height / 3 * 2, 0), second_color),
+        VertexFormat(glm::vec3(-width / 5 * 2, height / 3 * 2, 0), second_color),
+        VertexFormat(glm::vec3(-width / 5 * 2, height / 6, 0), second_color),
+        VertexFormat(glm::vec3(-width / 10 * 3, height / 6, 0), second_color),
+    };
+
+    Mesh *lawnMower = new Mesh(name);
+    const std::vector<unsigned int> indices = {
+        // wheel 1
+        4, 5, 6,
+        4, 6, 7,
+
+        // wheel 2
+        8, 9, 10,
+        8, 10, 11,
+
+        // handle
+        12, 13, 14,
+        12, 14, 15,
+
+        // base
+        0, 1, 2,
+        0, 2, 3,
+    };
+
+    lawnMower->InitFromData(vertices, indices);
+    return lawnMower;
+}

@@ -29,6 +29,7 @@ namespace PvZ {
         void OnWindowResize(int width, int height) override;
 
         void SetViewportArea(const ViewportSpace &viewSpace, glm::vec3 colorColor = glm::vec3(0), bool clear = true);
+        void DrawLawnMowers(const glm::mat3 &visMatrix);
         void DrawScene(const glm::mat3 &visMatrix);
         void DrawMap(const glm::mat3 &visMatrix);
         void DrawEnemies(const glm::mat3 &visMatrix);

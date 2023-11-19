@@ -66,6 +66,13 @@ void LogicsEngine::Update(const float deltaTime) {
     for (auto &enemy : enemies) {
         Position position = enemy.GetPosition();
 
+        if (position.x < END_ZONE_LIMIT + ENEMY_OUTER_RADIUS)
+            for (auto &lawnMower : lawnMowers) {
+                if (lawnMower.GetPosition().y == enemy.GetPosition().y) {
+                    lawnMower.SetActivated(true);
+                }
+            }
+        
         if (position.x < END_ZONE_LIMIT) {
             if (enemy.GetScale() > 0) {
                 enemy.SetScale(enemy.GetScale() - SCALE_CHANGE_VAL * deltaTime);
@@ -81,6 +88,27 @@ void LogicsEngine::Update(const float deltaTime) {
         else {
             position.x -= ENEMY_MOVE_VAL * deltaTime;
             enemy.SetPosition(position);
+        }
+    }
+
+    // move active lawn mowers
+    for (auto &lawnMower : lawnMowers) {
+        Position position = lawnMower.GetPosition();
+        
+        if (position.x >= PROJECTILE_X_LIMIT) {
+            lawnMower.SetReachedEnd(true);
+        } else if (lawnMower.IsActivated() == true) {
+            position.x += LAWN_MOWER_MOVE_VAL * deltaTime;
+            lawnMower.SetPosition(position);
+        }
+
+        // check for enemy collision
+        for (auto &enemy : enemies) {
+            if (enemy.GetPosition().y == position.y &&
+                abs(enemy.GetPosition().x - position.x) < ENEMY_OUTER_RADIUS + LAWN_MOWER_WIDTH -
+                HIT_OFFSET && lawnMower.IsActivated() == true) {
+                enemy.SetHealth(0);
+                }
         }
     }
 
@@ -185,6 +213,10 @@ void LogicsEngine::Update(const float deltaTime) {
                                                        }),
                                         defender.GetProjectiles().end());
     }
+
+    lawnMowers.erase(std::remove_if(lawnMowers.begin(), lawnMowers.end(),
+                                 [](LawnMower lawnMower) { return lawnMower.ReachedEnd() == true; }),
+                  lawnMowers.end());
 }
 
 LogicsEngine::LogicsEngine() {
@@ -207,6 +239,14 @@ LogicsEngine::LogicsEngine() {
     enemySpawnTimers.push_back(rand() % 100 / 10.0f + 5);
     enemySpawnTimers.push_back(rand() % 100 / 10.0f + 5);
     creditStarSpawnTimer = rand() % 2 + 1;
+
+    // set lawn mowers
+    LawnMower lawnMower = LawnMower({PADDING + END_ZONE_WIDTH / 2, FIRST_LINE}); 
+    lawnMowers.push_back(lawnMower);
+    lawnMower = LawnMower({PADDING + END_ZONE_WIDTH / 2, SECOND_LINE}); 
+    lawnMowers.push_back(lawnMower);
+    lawnMower = LawnMower({PADDING + END_ZONE_WIDTH / 2, THIRD_LINE}); 
+    lawnMowers.push_back(lawnMower);
 
     // init grid positions
     for (int i = 0; i < 3; i++)

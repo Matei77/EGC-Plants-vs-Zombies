@@ -29,5 +29,11 @@ namespace PvZ {
                             float width,
                             float height,
                             glm::vec3 color);
+
+        Mesh *CreateLawnMower(const std::string &name,
+                              float width,
+                              float height,
+                              glm::vec3 first_color,
+                              glm::vec3 second_color);
     }
 }
