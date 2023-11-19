@@ -7,6 +7,7 @@
 #include "creditStar.h"
 #include "defender.h"
 #include "enemy.h"
+#include "lawnMower.h"
 #include "utils.h"
 
 namespace PvZ {
@@ -30,6 +31,8 @@ namespace PvZ {
         std::unordered_map<Type, int> prices;
         Position dragDefenderPos;
 
+        std::vector<LawnMower> lawnMowers;
+
     public:
         LogicsEngine();
         
@@ -50,6 +53,8 @@ namespace PvZ {
         std::unordered_map<Type, int> GetPrices() const { return prices; }
         Position GetDragDefenderPos() const { return dragDefenderPos; }
         void SetDragDefenderPos(const Position &dragDefenderPos) { this->dragDefenderPos = dragDefenderPos; }
+        std::vector<LawnMower> GetLawnMowers() const { return lawnMowers; }
+        void SetLawnMowers(const std::vector<LawnMower> &lawnMowers) { this->lawnMowers = lawnMowers; }
 
         // safely get grid square
         GridSquare & GetGridSquare(const int i, const int j) {
